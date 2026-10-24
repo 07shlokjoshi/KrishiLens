@@ -4,9 +4,10 @@
  */
 export class SpeechReader {
   constructor() {
-    this.synth = window.speechSynthesis;
+    this.synth = typeof window !== "undefined" ? window.speechSynthesis : null;
     this.isSpeaking = false;
     this.voices = [];
+    this.onStateChange = null;
 
     if (this.synth) {
       this.loadVoices();
@@ -17,17 +18,25 @@ export class SpeechReader {
   }
 
   loadVoices() {
-    this.voices = this.synth.getVoices();
+    if (this.synth) {
+      this.voices = this.synth.getVoices();
+    }
   }
 
-  speak(text, lang = "hi") {
+  speak(text, lang = "hi", stateCallback = null) {
     if (!this.synth) return;
-    this.stop();
+
+    if (this.isSpeaking) {
+      this.stop();
+      return;
+    }
 
     if (!text || text.trim().length === 0) return;
 
+    this.onStateChange = stateCallback;
+
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.9; // Slightly slower for clarity
+    utterance.rate = 0.9; // Slightly slower for crisp clarity
     utterance.pitch = 1.0;
 
     let langCode = "en-IN";
@@ -41,17 +50,29 @@ export class SpeechReader {
       utterance.voice = matchedVoice;
     }
 
-    utterance.onstart = () => { this.isSpeaking = true; };
-    utterance.onend = () => { this.isSpeaking = false; };
-    utterance.onerror = () => { this.isSpeaking = false; };
+    utterance.onstart = () => {
+      this.isSpeaking = true;
+      if (this.onStateChange) this.onStateChange(true);
+    };
+
+    utterance.onend = () => {
+      this.isSpeaking = false;
+      if (this.onStateChange) this.onStateChange(false);
+    };
+
+    utterance.onerror = () => {
+      this.isSpeaking = false;
+      if (this.onStateChange) this.onStateChange(false);
+    };
 
     this.synth.speak(utterance);
   }
 
   stop() {
-    if (this.synth && this.synth.speaking) {
+    if (this.synth && (this.synth.speaking || this.isSpeaking)) {
       this.synth.cancel();
       this.isSpeaking = false;
+      if (this.onStateChange) this.onStateChange(false);
     }
   }
 }

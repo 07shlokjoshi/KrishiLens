@@ -3,316 +3,672 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>KrishiLens — Real-Time Pesticide Label Detection</title>
-  <meta name="description" content="Instant camera-based pesticide label detection and multimodal interpretation for Indian farmers using Gemma 4." />
+  <title>KrishiLens — Optical Pesticide Label Detection & Safety Intelligence</title>
+  <meta name="description" content="Precision agricultural instrument for instant camera-based pesticide label detection, CIB&RC statutory verification, and multilingual safety guidance." />
   
-  <!-- Modern Typography -->
+  <!-- Modern Instrument Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
+  <!-- Ambient Agricultural Texture Overlay -->
+  <div class="ambient-grain" aria-hidden="true"></div>
+
   <div class="app-container">
     
-    <!-- Top Persistent Header -->
-    <header class="app-header">
-      <div class="brand-wrapper">
-        <span class="brand-logo">🌾</span>
-        <div>
-          <span class="brand-title">KrishiLens</span>
-          <span class="badge-tag">Gemma 4</span>
+    <!-- ======================================================================
+         TACTILE INSTRUMENT CHASSIS HEADER
+         ====================================================================== -->
+    <header class="chassis-header" role="banner">
+      <!-- Milled Corner Rivets -->
+      <div class="chassis-rivet top-left" aria-hidden="true"></div>
+      <div class="chassis-rivet top-right" aria-hidden="true"></div>
+
+      <div class="brand-instrument">
+        <!-- Custom SVG Optical Aperture & Seedling Icon -->
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="brand-svg">
+            <!-- Optical Outer Ring -->
+            <circle cx="18" cy="18" r="16.5" stroke="#7BA66A" stroke-width="1.5" stroke-dasharray="2 3" opacity="0.6"/>
+            <circle cx="18" cy="18" r="13" stroke="#F5F1E7" stroke-width="1.5" opacity="0.9"/>
+            <!-- Reticle Crosshair Ticks -->
+            <line x1="18" y1="1" x2="18" y2="4" stroke="#7BA66A" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="18" y1="32" x2="18" y2="35" stroke="#7BA66A" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="1" y1="18" x2="4" y2="18" stroke="#7BA66A" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="32" y1="18" x2="35" y2="18" stroke="#7BA66A" stroke-width="1.5" stroke-linecap="round"/>
+            <!-- Stylized Seedling Leaf Core -->
+            <path d="M18 9C13 14 12 21 18 27C24 21 23 14 18 9Z" fill="#7BA66A"/>
+            <path d="M18 13C16.5 16.5 16 20 18 24C20 20 19.5 16.5 18 13Z" fill="#F5F1E7"/>
+            <circle cx="18" cy="18" r="2.5" fill="#173F32"/>
+          </svg>
+        </div>
+
+        <div class="brand-text">
+          <div class="brand-title-row">
+            <span class="brand-name">KrishiLens</span>
+            <span class="model-badge">KL-4 FIELD EDITION</span>
+          </div>
+          <span class="brand-sub">CIB&RC OPTICAL INSPECTION TERMINAL</span>
         </div>
       </div>
-      <div id="header-status-pill" class="api-status-pill">
-        <span class="status-dot"></span>
-        <span id="header-status-text">Connecting...</span>
+
+      <!-- Instrument Telemetry Jewel & Connection Pill -->
+      <div class="header-telemetry">
+        <div id="header-status-pill" class="telemetry-pill" title="System Connection Status">
+          <span class="telemetry-jewel online"></span>
+          <span id="header-status-text">Connecting...</span>
+        </div>
       </div>
     </header>
 
     <!-- Hidden File Input for Image Upload Fallback -->
-    <input type="file" id="file-input" accept="image/*" class="hidden" />
+    <input type="file" id="file-input" accept="image/*" class="hidden" aria-hidden="true" />
 
     <!-- ======================================================================
-         SCREEN 1: HOME SCREEN
+         SCREEN 1: HOME SCREEN / FIELD DASHBOARD
          ====================================================================== -->
-    <main id="screen-home" class="screen active">
-      <div class="hero-card">
-        <div class="hero-icon">🔎🌾</div>
-        <h1 class="hero-title">Scan Pesticide Label</h1>
-        <p class="hero-subtitle">
-          Point camera at any pesticide bottle, box, or packet. KrishiLens detects the label, reads active ingredients, verifies toxicity, and explains safety rules in simple language.
-        </p>
-        
-        <button id="btn-start-scan" class="btn-primary" aria-label="Open Camera to Scan Label">
-          <span>📷</span> Open Camera Scanner
-        </button>
-        
-        <button id="btn-upload-file" class="btn-secondary" aria-label="Upload Photo or Leaflet">
-          <span>📁</span> Upload Photo or Leaflet
-        </button>
-      </div>
+    <main id="screen-home" class="screen active" role="main">
+      
+      <!-- Field Terminal Hero Viewfinder -->
+      <section class="instrument-deck">
+        <div class="deck-plate">
+          <div class="deck-aperture" aria-hidden="true">
+            <div class="aperture-reticle">
+              <div class="aperture-crosshair"></div>
+              <div class="aperture-lens-flare"></div>
+              <div class="aperture-inner-ring">
+                <span class="aperture-icon">🌾</span>
+              </div>
+            </div>
+            <div class="aperture-scale">
+              <span>0°</span>
+              <span>90°</span>
+              <span>180°</span>
+              <span>270°</span>
+            </div>
+          </div>
 
-      <!-- Core Features Grid -->
-      <div class="feature-list">
-        <div class="feature-box">
-          <div class="feature-icon">⚡</div>
-          <div class="feature-title">Real-Time Detection</div>
-          <div class="feature-desc">Automatic packaging boundary tracking at 15 FPS without network delay.</div>
-        </div>
-        <div class="feature-box">
-          <div class="feature-icon">🛡️</div>
-          <div class="feature-title">CIB&RC Standards</div>
-          <div class="feature-desc">Statutory Red/Yellow/Blue/Green toxicity triangle verification.</div>
-        </div>
-        <div class="feature-box">
-          <div class="feature-icon">🤖</div>
-          <div class="feature-title">Gemma 4 Multimodal</div>
-          <div class="feature-desc">Deep image understanding with verbatim safety instruction extraction.</div>
-        </div>
-        <div class="feature-box">
-          <div class="feature-icon">🔊</div>
-          <div class="feature-title">Voice Guidance</div>
-          <div class="feature-desc">Audio readout in Hindi & Marathi for farmers with limited literacy.</div>
-        </div>
-      </div>
+          <div class="deck-content">
+            <div class="deck-tag">
+              <span class="pulse-indicator"></span>
+              OPTICAL PESTICIDE ANALYZER
+            </div>
+            <h1 class="deck-heading">Detect & Decode Pesticide Labels</h1>
+            <p class="deck-description">
+              Point your camera at any pesticide bottle, box, or sachet. KrishiLens identifies the label, parses active ingredients, checks statutory CIB&RC toxicity categories, and delivers actionable safety rules in simple language.
+            </p>
 
-      <!-- Test Benchmark Presets -->
-      <div class="presets-section">
-        <div class="section-label">Official Benchmark Test Samples</div>
-        <div id="presets-container" class="preset-scroll">
-          <div class="preset-meta" style="padding: 10px;">Loading verified test cases...</div>
+            <!-- Tactile Physical Action Controls -->
+            <div class="deck-actions">
+              <button id="btn-start-scan" class="tactile-btn btn-hero-shutter" aria-label="Open Optical Camera Scanner">
+                <span class="btn-highlight"></span>
+                <span class="btn-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                </span>
+                <span class="btn-text">Open Camera Scanner</span>
+                <span class="btn-groove"></span>
+              </button>
+
+              <button id="btn-upload-file" class="tactile-btn btn-secondary-plate" aria-label="Upload Photo or Leaflet">
+                <span class="btn-highlight"></span>
+                <span class="btn-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                </span>
+                <span class="btn-text">Upload Leaflet / Photo</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Instrument Telemetry & Standards Bar -->
+      <section class="telemetry-bar">
+        <div class="telemetry-item">
+          <span class="telemetry-label">INSPECTION ENGINE</span>
+          <span class="telemetry-value">Gemma 4 Multimodal</span>
+        </div>
+        <div class="telemetry-divider"></div>
+        <div class="telemetry-item">
+          <span class="telemetry-label">STATUTORY STANDARD</span>
+          <span class="telemetry-value">Insecticides Rules 1971</span>
+        </div>
+        <div class="telemetry-divider"></div>
+        <div class="telemetry-item">
+          <span class="telemetry-label">LOCAL EDGE FALLBACK</span>
+          <span class="telemetry-value">Tesseract CIB&RC Engine</span>
+        </div>
+      </section>
+
+      <!-- Field Operation Capabilities Grid -->
+      <section class="capabilities-section">
+        <div class="section-header-row">
+          <div class="section-title-tag">CORE CAPABILITIES</div>
+          <span class="section-rule"></span>
+        </div>
+
+        <div class="capabilities-grid">
+          <div class="capability-card">
+            <div class="capability-indicator">
+              <span class="cap-num">01</span>
+              <span class="cap-symbol">⚡</span>
+            </div>
+            <h3 class="cap-title">Real-Time Edge Tracking</h3>
+            <p class="cap-desc">Client-side 15 FPS edge density & stability verification ensures shake-free optical captures.</p>
+          </div>
+
+          <div class="capability-card">
+            <div class="capability-indicator">
+              <span class="cap-num">02</span>
+              <span class="cap-symbol">🛡️</span>
+            </div>
+            <h3 class="cap-title">CIB&RC Toxicity Triangle</h3>
+            <p class="cap-desc">Instant verification of Red, Yellow, Blue, or Green toxicity diamonds under Indian law.</p>
+          </div>
+
+          <div class="capability-card">
+            <div class="capability-indicator">
+              <span class="cap-num">03</span>
+              <span class="cap-symbol">🤖</span>
+            </div>
+            <h3 class="cap-title">Multimodal Interpretation</h3>
+            <p class="cap-desc">Verbatim chemical extraction, dilution ratios, target pests, and statutory antidote protocols.</p>
+          </div>
+
+          <div class="capability-card">
+            <div class="capability-indicator">
+              <span class="cap-num">04</span>
+              <span class="cap-symbol">🔊</span>
+            </div>
+            <h3 class="cap-title">Multilingual Audio Readout</h3>
+            <p class="cap-desc">Spoken safety guidance in Hindi, Marathi, and English designed for low-literacy field operators.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Official Benchmark Test Samples Carousel -->
+      <section class="presets-section">
+        <div class="section-header-row">
+          <div class="section-title-tag">OFFICIAL FIELD BENCHMARK SAMPLES</div>
+          <span class="section-caption">Tap any specimen slide to inspect extraction</span>
+        </div>
+        
+        <div id="presets-container" class="preset-scroll" role="region" aria-label="Benchmark Specimen Slides">
+          <div class="preset-loading-card">
+            <span class="preset-spinner"></span>
+            <span>Loading verified test specimens...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Field Quick-Start Guide Card -->
+      <section class="field-guide-card">
+        <div class="guide-header">
+          <span class="guide-icon">📋</span>
+          <span class="guide-title">Field Inspection Checklist</span>
+        </div>
+        <ol class="guide-steps">
+          <li><strong>Frame the label:</strong> Align the printed label flat within the optical reticle.</li>
+          <li><strong>Verify lighting:</strong> Avoid strong flashlight glare and ensure the toxicity triangle is visible.</li>
+          <li><strong>Review advisory:</strong> Confirm mandatory personal protective equipment before spraying.</li>
+        </ol>
+      </section>
+
     </main>
 
     <!-- ======================================================================
-         SCREEN 2: LIVE CAMERA SCREEN
+         SCREEN 2: LIVE CAMERA SCREEN — HERO INTERACTION
          ====================================================================== -->
-    <section id="screen-camera" class="screen camera-screen">
-      <div class="camera-viewport">
-        <video id="camera-video" playsinline autoplay muted></video>
-        <canvas id="detector-canvas"></canvas>
+    <section id="screen-camera" class="screen camera-screen" aria-label="Camera Optical Viewfinder">
+      <div class="optical-casing">
+        
+        <!-- Live Video & Detector Canvas -->
+        <div class="camera-viewport">
+          <video id="camera-video" playsinline autoplay muted></video>
+          <canvas id="detector-canvas"></canvas>
 
-        <div class="camera-overlay">
-          <!-- Top Bar -->
-          <div class="camera-top-bar">
-            <button id="btn-cam-back" class="cam-btn-icon" aria-label="Back to Home">✕</button>
-            <button id="btn-toggle-torch" class="cam-btn-icon" aria-label="Toggle Flashlight" style="display: none;">🔦</button>
-            <button id="btn-flip-cam" class="cam-btn-icon" aria-label="Flip Camera">🔄</button>
-          </div>
+          <!-- Precision Technical Overlay -->
+          <div class="optical-overlay">
+            
+            <!-- Top Instrument Bar -->
+            <div class="optical-top-bar">
+              <button id="btn-cam-back" class="knurled-control-btn" aria-label="Exit Camera" title="Exit Camera">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
 
-          <!-- Center Detection Reticle -->
-          <div class="detection-reticle-container">
-            <div id="detection-box" class="detection-box">
-              <div class="scan-laser-line"></div>
+              <div class="optical-mode-readout">
+                <span class="mode-led"></span>
+                <span class="mode-text">OPTICAL TRACKER • ACTIVE</span>
+              </div>
+
+              <div class="optical-top-actions">
+                <button id="btn-toggle-torch" class="knurled-control-btn" aria-label="Toggle Flashlight" title="Flashlight" style="display: none;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </button>
+                <button id="btn-flip-cam" class="knurled-control-btn" aria-label="Flip Camera" title="Flip Camera">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
-            <div id="detection-pill" class="detection-status-pill">
-              🔍 Align Pesticide Label in Frame
+
+            <!-- Optical Precision Reticle with Measurement Ticks -->
+            <div class="reticle-stage">
+              <div id="detection-box" class="detection-box">
+                <!-- Precision Corner Brackets -->
+                <div class="reticle-bracket top-left"></div>
+                <div class="reticle-bracket top-right"></div>
+                <div class="reticle-bracket bottom-left"></div>
+                <div class="reticle-bracket bottom-right"></div>
+
+                <!-- Laser Scanning Beam -->
+                <div class="scan-laser-line"></div>
+
+                <!-- Reticle Center Crosshair -->
+                <div class="reticle-center-cross"></div>
+
+                <!-- Millimeter Measurement Ticks -->
+                <div class="reticle-ticks-left"></div>
+                <div class="reticle-ticks-right"></div>
+              </div>
+
+              <!-- Recessed Telemetry Pill -->
+              <div class="telemetry-pill-holder">
+                <div id="detection-pill" class="detection-status-pill">
+                  <span class="pill-dot"></span>
+                  <span class="pill-msg">ALIGN PESTICIDE LABEL IN RETICLE</span>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
-      </div>
 
-      <!-- Bottom Controls Bar -->
-      <div class="camera-bottom-bar">
-        <button id="btn-shutter" class="shutter-btn" aria-label="Capture Label Frame">
-          <div class="shutter-btn-inner"></div>
-        </button>
+        <!-- Milled Camera Trigger Bar -->
+        <div class="optical-bottom-bar">
+          <div class="trigger-station">
+            <button id="btn-shutter" class="tactile-shutter-trigger" aria-label="Capture High-Resolution Frame">
+              <div class="shutter-outer-ring">
+                <div class="shutter-inner-cap">
+                  <div class="shutter-optic-icon"></div>
+                </div>
+              </div>
+            </button>
+            <span class="shutter-legend">PRESS TO CAPTURE</span>
+          </div>
+        </div>
+
       </div>
     </section>
 
     <!-- ======================================================================
          SCREEN 3: PREVIEW & CONFIRM SCREEN
          ====================================================================== -->
-    <section id="screen-preview" class="screen">
-      <h2 style="font-size: 18px; margin-bottom: 12px; font-family: var(--font-heading);">
-        Verify Captured Image
-      </h2>
-      <div class="preview-container">
-        <img id="preview-img" alt="Captured Pesticide Label" />
-        <span class="crop-badge">✓ Captured at High Resolution</span>
-      </div>
+    <section id="screen-preview" class="screen preview-screen" aria-label="Inspect Captured Frame">
+      <div class="instrument-panel-card">
+        <div class="panel-header-strip">
+          <div class="panel-tag">
+            <span class="telemetry-jewel green"></span>
+            SPECIMEN FRAME ACQUIRED
+          </div>
+          <span class="panel-code">FRAME_HIRES_RAW</span>
+        </div>
 
-      <div class="preview-actions">
-        <button id="btn-analyze-now" class="btn-primary">
-          <span>⚡</span> Analyze Label with Gemma 4
-        </button>
-        <button id="btn-retake" class="btn-secondary">
-          <span>🔄</span> Retake Photo
-        </button>
+        <div class="preview-frame-casing">
+          <div class="preview-container">
+            <img id="preview-img" alt="Captured Pesticide Packaging Label" />
+            <div class="preview-meta-stamp">
+              <span class="stamp-icon">✓</span>
+              <span>CALIBRATED FOR OPTICAL DECONVOLUTION</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-actions">
+          <button id="btn-analyze-now" class="tactile-btn btn-primary-deck" aria-label="Analyze Label with AI Inference">
+            <span class="btn-highlight"></span>
+            <span class="btn-icon">⚡</span>
+            <span class="btn-text">Execute AI Label Extraction</span>
+            <span class="btn-groove"></span>
+          </button>
+          
+          <button id="btn-retake" class="tactile-btn btn-secondary-plate" aria-label="Discard and Retake Photo">
+            <span class="btn-highlight"></span>
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">Retake Camera Frame</span>
+          </button>
+        </div>
       </div>
     </section>
 
     <!-- ======================================================================
-         SCREEN 4: PROCESSING STATE
+         SCREEN 4: PROCESSING STATE (SPECTRAL SEQUENCE)
          ====================================================================== -->
-    <section id="screen-processing" class="screen">
-      <div class="processing-container">
-        <div class="spinner-orbit"></div>
-        <h2 class="processing-title">Reading Pesticide Label...</h2>
-        <p class="processing-subtitle">Analyzing regulatory chemical text and safety markings</p>
+    <section id="screen-processing" class="screen processing-screen" aria-label="Analysis in Progress">
+      <div class="processing-instrument-card">
+        
+        <!-- Animated Optical Gyroscope / Scanner Head -->
+        <div class="analyzer-lens-unit" aria-hidden="true">
+          <div class="analyzer-outer-ring"></div>
+          <div class="analyzer-blade-ring"></div>
+          <div class="analyzer-core">
+            <div class="analyzer-laser"></div>
+          </div>
+        </div>
 
-        <div class="pipeline-steps">
+        <h2 class="processing-title">Decoding Pesticide Packaging</h2>
+        <p class="processing-subtitle">Executing multimodal vision deconvolution & statutory safety validation</p>
+
+        <!-- Mechanical Progress Pipeline -->
+        <div class="pipeline-station">
           <div id="proc-step-1" class="step-item active">
-            <span class="step-icon">📐</span> Preprocessing & edge normalization
+            <div class="step-jewel"></div>
+            <div class="step-text">
+              <span class="step-name">Optical Preprocessing</span>
+              <span class="step-detail">Contrast normalization & packaging boundary alignment</span>
+            </div>
           </div>
           <div id="proc-step-2" class="step-item">
-            <span class="step-icon">🤖</span> Gemma 4 Multimodal inference
+            <div class="step-jewel"></div>
+            <div class="step-text">
+              <span class="step-name">Gemma 4 Multimodal Inference</span>
+              <span class="step-detail">Deep textual transcription & chemical decomposition</span>
+            </div>
           </div>
           <div id="proc-step-3" class="step-item">
-            <span class="step-icon">🔍</span> Extracting active ingredients & dose
+            <div class="step-jewel"></div>
+            <div class="step-text">
+              <span class="step-name">Active Ingredient Extraction</span>
+              <span class="step-detail">Concentration w/w, dilution tables & CIR registry ID</span>
+            </div>
           </div>
           <div id="proc-step-4" class="step-item">
-            <span class="step-icon">🛡️</span> Verifying CIB&RC statutory safety rules
+            <div class="step-jewel"></div>
+            <div class="step-text">
+              <span class="step-name">CIB&RC Safety Verification</span>
+              <span class="step-detail">Insecticides Rules 1971 statutory toxicity certification</span>
+            </div>
           </div>
         </div>
+
       </div>
     </section>
 
     <!-- ======================================================================
-         SCREEN 5: STRUCTURED RESULTS SCREEN
+         SCREEN 5: STRUCTURED RESULTS SCREEN (FIELD CERTIFICATE)
          ====================================================================== -->
-    <section id="screen-results" class="screen results-screen">
+    <section id="screen-results" class="screen results-screen" aria-label="Label Inspection Results">
       
-      <!-- Provenance Badge -->
-      <div class="provenance-banner">
-        <span>Engine:</span>
-        <span id="res-provenance" class="provenance-pill">Gemma 4</span>
-      </div>
-
-      <!-- Toxicity Hazard Banner -->
-      <div id="res-tox-card" class="toxicity-hazard-card category-blue">
-        <div class="tox-header">
-          <div id="res-tox-signal" class="tox-signal-word">⚠️ DANGER (Blue Triangle)</div>
-          <div id="res-tox-badge" class="tox-badge">MODERATELY TOXIC</div>
-        </div>
-        <div id="res-tox-desc" class="tox-risk-desc">Harmful if swallowed or inhaled.</div>
-      </div>
-
-      <!-- Audio TTS Voice Reader -->
-      <div class="audio-tts-bar">
-        <div class="audio-label">
-          <span>🔊</span> Listen to Safety Guidance
-        </div>
-        <button id="btn-speak-safety" class="btn-tts">
-          <span>▶</span> Read Aloud
-        </button>
-      </div>
-
-      <!-- Language Selector Tabs -->
-      <div class="lang-selector-tabs">
-        <button class="lang-tab active" data-lang="en">English</button>
-        <button class="lang-tab" data-lang="hi">हिंदी (Hindi)</button>
-        <button class="lang-tab" data-lang="mr">मराठी (Marathi)</button>
-      </div>
-
-      <!-- Farmer Summary Card -->
-      <div class="field-card" style="margin-bottom: 16px; border-color: rgba(16, 185, 129, 0.4);">
-        <div class="field-label">Farmer Advisory Summary</div>
-        <div id="res-farmer-summary" class="field-value" style="font-size: 14px;">
-          Follow prescribed spray schedule.
-        </div>
-        <div class="field-label mt-12">Mandatory Protective Gear (PPE)</div>
-        <div id="res-ppe-chips" class="ppe-chips-container">
-          <!-- Filled dynamically -->
-        </div>
-      </div>
-
-      <!-- Structured Fields Group -->
-      <div class="result-field-group">
+      <!-- Field Certificate Substrate Card -->
+      <article class="certificate-card">
         
-        <div class="field-card">
-          <div class="field-label">Product / Brand Name</div>
-          <div id="res-product-name" class="field-value highlight">Loading...</div>
+        <!-- Certificate Header Strip -->
+        <div class="cert-header-bar">
+          <div class="cert-stamp">
+            <span class="cert-seal">🛡️</span>
+            <div>
+              <span class="cert-title">CIB&RC FIELD INSPECTION CERTIFICATE</span>
+              <span class="cert-sub">MINISTRY OF AGRICULTURE & FARMERS WELFARE (INDIA)</span>
+            </div>
+          </div>
+
+          <div class="cert-provenance">
+            <span class="prov-label">ENGINE:</span>
+            <span id="res-provenance" class="prov-badge">Gemma 4</span>
+          </div>
         </div>
 
-        <div class="field-card">
-          <div class="field-label">Active Ingredient</div>
-          <div id="res-active-ingredient" class="field-value">Loading...</div>
+        <!-- Statutory Toxicity Warning Plate -->
+        <div id="res-tox-card" class="toxicity-hazard-plate category-blue">
+          <div class="plate-screws top-left" aria-hidden="true"></div>
+          <div class="plate-screws top-right" aria-hidden="true"></div>
+          <div class="plate-screws bottom-left" aria-hidden="true"></div>
+          <div class="plate-screws bottom-right" aria-hidden="true"></div>
+
+          <div class="tox-diamond-emblem" aria-hidden="true">
+            <div class="diamond-shape">
+              <div class="diamond-half top-half"></div>
+              <div class="diamond-half bottom-half"></div>
+            </div>
+          </div>
+
+          <div class="tox-plate-content">
+            <div class="tox-badge-row">
+              <div id="res-tox-signal" class="tox-signal-word">⚠️ DANGER (Blue Triangle)</div>
+              <div id="res-tox-badge" class="tox-ld-rating">MODERATELY TOXIC</div>
+            </div>
+            <div id="res-tox-desc" class="tox-risk-desc">Harmful if swallowed or inhaled. Skin contact may cause irritation.</div>
+          </div>
         </div>
 
-        <div class="field-card">
-          <div class="field-label">Concentration & Formulation</div>
-          <div id="res-concentration" class="field-value">Loading...</div>
+        <!-- Audio TTS Speech Station (Field Speaker Unit) -->
+        <div class="audio-broadcast-station">
+          <div class="speaker-grill" aria-hidden="true">
+            <span class="grill-slot"></span>
+            <span class="grill-slot"></span>
+            <span class="grill-slot"></span>
+            <span class="grill-slot"></span>
+          </div>
+          
+          <div class="speaker-info">
+            <span class="speaker-label">VOICE BROADCAST STATION</span>
+            <span class="speaker-sub">Spoken Safety & Dosage Guidance</span>
+          </div>
+
+          <button id="btn-speak-safety" class="tactile-btn btn-speaker-trigger" aria-label="Read Safety Instructions Aloud">
+            <span class="btn-highlight"></span>
+            <span class="speaker-state-icon">▶</span>
+            <span class="speaker-btn-text">Read Aloud</span>
+          </button>
         </div>
 
-        <div class="field-card">
-          <div class="field-label">CIB&RC Registration Number</div>
-          <div id="res-reg-no" class="field-value">Loading...</div>
+        <!-- Language Selector Radio Tabs -->
+        <div class="lang-selector-bar" role="tablist" aria-label="Translation Language">
+          <button class="lang-tab active" data-lang="en" role="tab" aria-selected="true">
+            <span class="tab-indicator"></span>
+            English
+          </button>
+          <button class="lang-tab" data-lang="hi" role="tab" aria-selected="false">
+            <span class="tab-indicator"></span>
+            हिंदी (Hindi)
+          </button>
+          <button class="lang-tab" data-lang="mr" role="tab" aria-selected="false">
+            <span class="tab-indicator"></span>
+            मराठी (Marathi)
+          </button>
         </div>
 
-        <div class="field-card">
-          <div class="field-label">Directions for Use</div>
-          <div id="res-directions" class="field-value">Loading...</div>
+        <!-- Farmer Advisory Briefing Box -->
+        <div class="farmer-advisory-card">
+          <div class="field-label-tag">FARMER ACTION ADVISORY</div>
+          <div id="res-farmer-summary" class="advisory-text">
+            Follow statutory spray schedule and avoid application during high wind.
+          </div>
+
+          <div class="ppe-header-row">
+            <span class="ppe-title">MANDATORY PROTECTIVE GEAR (PPE)</span>
+            <span class="ppe-badge">STATUTORY COMPLIANCE</span>
+          </div>
+          <div id="res-ppe-chips" class="ppe-tokens-container">
+            <!-- Dynamic tokens -->
+          </div>
         </div>
 
-        <div class="field-card">
-          <div class="field-label">First Aid & Antidote Protocol</div>
-          <div id="res-first-aid" class="field-value" style="color: #fca5a5;">Loading...</div>
+        <!-- Technical Specification Fields (Field Note Inset) -->
+        <div class="technical-spec-grid">
+          
+          <div class="spec-card highlight-card">
+            <div class="spec-header">
+              <span class="spec-tag">COMMERCIAL IDENTITY</span>
+              <span class="spec-id">FIELD_01</span>
+            </div>
+            <div class="spec-label">Product / Trade Name</div>
+            <div id="res-product-name" class="spec-value product-highlight">Loading...</div>
+          </div>
+
+          <div class="spec-card">
+            <div class="spec-header">
+              <span class="spec-tag">CHEMICAL FORMULATION</span>
+              <span class="spec-id">FIELD_02</span>
+            </div>
+            <div class="spec-label">Active Ingredient</div>
+            <div id="res-active-ingredient" class="spec-value chemical-val">Loading...</div>
+          </div>
+
+          <div class="spec-card">
+            <div class="spec-header">
+              <span class="spec-tag">ASSAY PURITY</span>
+              <span class="spec-id">FIELD_03</span>
+            </div>
+            <div class="spec-label">Concentration & Grade</div>
+            <div id="res-concentration" class="spec-value">Loading...</div>
+          </div>
+
+          <div class="spec-card">
+            <div class="spec-header">
+              <span class="spec-tag">STATUTORY REGISTRY</span>
+              <span class="spec-id">FIELD_04</span>
+            </div>
+            <div class="spec-label">CIB&RC CIR Number</div>
+            <div id="res-reg-no" class="spec-value mono-val">Loading...</div>
+          </div>
+
+          <div class="spec-card full-width">
+            <div class="spec-header">
+              <span class="spec-tag">APPLICATION PROTOCOL</span>
+              <span class="spec-id">FIELD_05</span>
+            </div>
+            <div class="spec-label">Directions for Use & Waiting Period</div>
+            <div id="res-directions" class="spec-value text-block">Loading...</div>
+          </div>
+
+          <!-- Emergency Antidote Card (Red Warning Highlight) -->
+          <div class="spec-card full-width antidote-card">
+            <div class="spec-header">
+              <span class="spec-tag alert-tag">EMERGENCY PROTOCOL</span>
+              <span class="spec-id">STATUTORY_ANTIDOTE</span>
+            </div>
+            <div class="spec-label">First Aid & Specific Antidote Protocol</div>
+            <div id="res-first-aid" class="spec-value antidote-val">Loading...</div>
+          </div>
+
+          <div class="spec-card full-width">
+            <div class="spec-header">
+              <span class="spec-tag">STATUTORY WARNINGS</span>
+              <span class="spec-id">LABEL_STATEMENTS</span>
+            </div>
+            <div class="spec-label">Safety Statements Read From Packaging</div>
+            <ul id="res-warnings-list" class="warnings-bullet-list">
+              <!-- Dynamic items -->
+            </ul>
+          </div>
+
+          <div class="spec-card full-width">
+            <div class="spec-header">
+              <span class="spec-tag">ENVIRONMENT & DISPOSAL</span>
+              <span class="spec-id">FIELD_07</span>
+            </div>
+            <div class="spec-label">Storage & Safe Disposal</div>
+            <div id="res-storage" class="spec-value text-block">Loading...</div>
+          </div>
+
         </div>
 
-        <div class="field-card">
-          <div class="field-label">Safety Warnings Read from Label</div>
-          <ul id="res-warnings-list" style="padding-left: 20px; font-size: 13px; color: #f9fafb; margin-top: 6px;">
-          </ul>
+        <!-- Uncertainty / Blurry Notice (If Any Fields Missing) -->
+        <div id="res-uncertainty-box" class="clarity-warning-plate" style="display: none;">
+          <div class="clarity-icon">⚠️</div>
+          <div class="clarity-content">
+            <strong class="clarity-heading">Packaging Clarity Notice</strong>
+            <p id="res-uncertainty-notes" class="clarity-body"></p>
+          </div>
         </div>
 
-        <div class="field-card">
-          <div class="field-label">Storage Instructions</div>
-          <div id="res-storage" class="field-value">Loading...</div>
+        <!-- Official Statutory Disclaimer -->
+        <div class="official-disclaimer-plate">
+          <div class="disclaimer-stamp">OFFICIAL NOTICE</div>
+          <p id="res-safety-advisory" class="disclaimer-body">
+            This instrument transcribes physical packaging text verbatim. Always cross-reference with official CIB&RC registers. Do not guess dosage. Consult an authorized agricultural extension officer before application.
+          </p>
         </div>
 
-      </div>
+        <!-- Return & Navigation Actions -->
+        <div class="cert-actions">
+          <button id="btn-scan-another" class="tactile-btn btn-primary-deck" aria-label="Scan Another Pesticide Container">
+            <span class="btn-highlight"></span>
+            <span class="btn-icon">📷</span>
+            <span class="btn-text">Scan Another Container</span>
+            <span class="btn-groove"></span>
+          </button>
+          
+          <button id="btn-home-from-result" class="tactile-btn btn-secondary-plate" aria-label="Return to Instrument Home">
+            <span class="btn-highlight"></span>
+            <span class="btn-icon">🏠</span>
+            <span class="btn-text">Return to Main Deck</span>
+          </button>
+        </div>
 
-      <!-- Uncertainty Box (Displayed if any fields were unclear) -->
-      <div id="res-uncertainty-box" class="safety-disclaimer-box" style="display: none; background: rgba(245, 158, 11, 0.12); border-left-color: #f59e0b; color: #fde68a;">
-        <strong>⚠️ Clarity Notice:</strong>
-        <p id="res-uncertainty-notes" style="margin-top: 4px;"></p>
-      </div>
-
-      <!-- Statutory Safety Disclaimer -->
-      <div class="safety-disclaimer-box">
-        <strong>⚠️ Statutory Disclaimer:</strong>
-        <p id="res-safety-advisory" style="margin-top: 4px;">
-          This application reads printed packaging text. It does not replace advice from certified agricultural extension officers. Never guess dosage.
-        </p>
-      </div>
-
-      <!-- Actions -->
-      <button id="btn-scan-another" class="btn-primary" style="margin-bottom: 12px;">
-        <span>📷</span> Scan Another Label
-      </button>
-      <button id="btn-home-from-result" class="btn-secondary">
-        <span>🏠</span> Return to Home
-      </button>
+      </article>
 
     </section>
 
     <!-- ======================================================================
          SCREEN 6: ERROR & UNREADABLE SCREEN
          ====================================================================== -->
-    <section id="screen-error" class="screen">
-      <div class="error-card">
-        <div class="error-icon">⚠️</div>
+    <section id="screen-error" class="screen error-screen" aria-label="Inspection Failure Notification">
+      <div class="error-chassis-card">
+        <div class="error-hazard-emblem">⚠️</div>
         <h2 id="error-title" class="error-title">Unreadable Label</h2>
         <p id="error-message" class="error-message">
-          The camera could not find legible text on this pesticide packaging.
+          The optical sensor could not locate legible statutory chemical text in the frame.
         </p>
 
-        <button id="btn-error-retry" class="btn-primary" style="margin-bottom: 12px;">
-          <span>🔄</span> Try Scanning Again
-        </button>
-        <button id="btn-error-home" class="btn-secondary">
-          <span>🏠</span> Back to Home
-        </button>
+        <div class="error-corrective-box">
+          <div class="corrective-title">CORRECTIVE FIELD ACTIONS:</div>
+          <ul class="corrective-list">
+            <li>Ensure the camera lens is clean and free of water or soil.</li>
+            <li>Hold the container steady at approximately 20–30 cm distance.</li>
+            <li>Rotate the bottle to align the statutory CIB&RC toxicity diamond.</li>
+            <li>In dim conditions, turn on the flashlight or use photo upload.</li>
+          </ul>
+        </div>
+
+        <div class="error-actions">
+          <button id="btn-error-retry" class="tactile-btn btn-primary-deck" aria-label="Try Scanning Again">
+            <span class="btn-highlight"></span>
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">Retry Optical Scan</span>
+          </button>
+          
+          <button id="btn-error-home" class="tactile-btn btn-secondary-plate" aria-label="Return to Instrument Home">
+            <span class="btn-highlight"></span>
+            <span class="btn-icon">🏠</span>
+            <span class="btn-text">Return to Main Deck</span>
+          </button>
+        </div>
       </div>
     </section>
 
   </div>
 
-  <!-- Scripts -->
+  <!-- Toast Notification System -->
+  <div id="app-toast" class="app-toast" role="status" aria-live="polite"></div>
+
+  <!-- Module Scripts -->
   <script type="module" src="/js/app.js"></script>
 </body>
 </html>

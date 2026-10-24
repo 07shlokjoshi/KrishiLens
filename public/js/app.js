@@ -9,7 +9,7 @@ const previewImg = document.getElementById("preview-img");
 const fileInput = document.getElementById("file-input");
 const detectionPill = document.getElementById("detection-pill");
 const detectionBox = document.getElementById("detection-box");
-const stabilityMeter = document.getElementById("stability-meter");
+const appToast = document.getElementById("app-toast");
 
 // Screens
 const screens = {
@@ -30,11 +30,13 @@ let currentCapturedImage = null;
 let currentResultData = null;
 let selectedLanguage = "en";
 let currentCropRect = null;
+let toastTimeout = null;
 
 // Initialize
 async function init() {
   setupNavigation();
   setupCamera();
+  setupClickToCopy();
   loadBenchmarkPresets();
   checkHealth();
 }
@@ -46,10 +48,32 @@ function showScreen(name) {
     }
   });
 
+  // Stop camera if leaving camera screen
   if (name !== "camera" && camera) {
     detector?.stop();
     camera.stop();
   }
+
+  // Stop any active speech on screen change
+  if (name !== "results") {
+    speech.stop();
+    updateSpeechButtonState(false);
+  }
+
+  // Smooth scroll to top of view
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showToast(message) {
+  if (!appToast) return;
+  if (toastTimeout) clearTimeout(toastTimeout);
+
+  appToast.textContent = message;
+  appToast.classList.add("visible");
+
+  toastTimeout = setTimeout(() => {
+    appToast.classList.remove("visible");
+  }, 2400);
 }
 
 function setupNavigation() {
@@ -81,10 +105,12 @@ function setupNavigation() {
   document.getElementById("btn-toggle-torch")?.addEventListener("click", async () => {
     const isOn = await camera?.toggleTorch();
     document.getElementById("btn-toggle-torch")?.classList.toggle("active", isOn);
+    showToast(isOn ? "Flashlight Activated" : "Flashlight Off");
   });
 
   document.getElementById("btn-flip-cam")?.addEventListener("click", async () => {
     await camera?.switchCamera();
+    showToast("Camera Switched");
   });
 
   // Preview buttons
@@ -123,11 +149,36 @@ function setupNavigation() {
 
   // Language Tabs
   document.querySelectorAll(".lang-tab").forEach((tab) => {
-    tab.addEventListener("click", (e) => {
-      document.querySelectorAll(".lang-tab").forEach((t) => t.classList.remove("active"));
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".lang-tab").forEach((t) => {
+        t.classList.remove("active");
+        t.setAttribute("aria-selected", "false");
+      });
       tab.classList.add("active");
+      tab.setAttribute("aria-selected", "true");
       selectedLanguage = tab.dataset.lang || "en";
       renderLanguageContent();
+
+      // If speech was playing, restart in new language
+      if (speech.isSpeaking) {
+        speech.stop();
+        triggerSpeechReadout();
+      }
+    });
+  });
+}
+
+function setupClickToCopy() {
+  document.querySelectorAll(".spec-card").forEach((card) => {
+    card.style.cursor = "pointer";
+    card.setAttribute("title", "Click to copy field to clipboard");
+    card.addEventListener("click", () => {
+      const valEl = card.querySelector(".spec-value");
+      if (valEl && valEl.textContent && !valEl.classList.contains("null-value")) {
+        navigator.clipboard?.writeText(valEl.textContent.trim()).then(() => {
+          showToast(`Copied: "${valEl.textContent.trim().substring(0, 24)}..."`);
+        }).catch(() => {});
+      }
     });
   });
 }
@@ -150,7 +201,7 @@ async function startCameraWorkflow() {
   showScreen("camera");
   const res = await camera.start();
   if (!res.success) {
-    showErrorScreen("Camera Permission Error", res.message || "Could not access device camera. Please allow camera permissions or use the upload button.");
+    showErrorScreen("Camera Permission Error", res.message || "Could not access device camera. Please grant camera permissions or use the upload button.");
     return;
   }
 
@@ -168,16 +219,28 @@ function updateDetectionUI({ detected, stability, isBlurry }) {
 
   if (detected) {
     detectionBox.className = "detection-box detected";
-    detectionPill.innerHTML = `🟢 Label Detected (${stability}% stable)`;
+    detectionPill.innerHTML = `
+      <span class="pill-dot" style="background:#10B981;box-shadow:0 0 6px #10B981"></span>
+      <span class="pill-msg">🟢 LABEL LOCKED (${stability}% STABLE)</span>
+    `;
   } else if (stability > 15) {
     detectionBox.className = "detection-box scanning";
-    detectionPill.innerHTML = `🟡 Stabilizing Packaging (${stability}%)`;
+    detectionPill.innerHTML = `
+      <span class="pill-dot" style="background:#E4A13B;box-shadow:0 0 6px #E4A13B"></span>
+      <span class="pill-msg">🟡 TRACKING PACKAGING (${stability}%)</span>
+    `;
   } else if (isBlurry) {
     detectionBox.className = "detection-box";
-    detectionPill.innerHTML = `⚠️ Image Blurry — Hold Steady or Move Closer`;
+    detectionPill.innerHTML = `
+      <span class="pill-dot" style="background:#B83A32;box-shadow:0 0 6px #B83A32"></span>
+      <span class="pill-msg">⚠️ HOLD STEADY — IMAGE BLURRY</span>
+    `;
   } else {
     detectionBox.className = "detection-box";
-    detectionPill.innerHTML = `🔍 Align Pesticide Label in Frame`;
+    detectionPill.innerHTML = `
+      <span class="pill-dot"></span>
+      <span class="pill-msg">ALIGN PESTICIDE LABEL IN RETICLE</span>
+    `;
   }
 }
 
@@ -228,7 +291,7 @@ async function processImageAnalysis(imageDataUri) {
     currentResultData = data;
 
     if (!data.label_detected && data.status === "NO_LABEL_DETECTED") {
-      showErrorScreen("No Pesticide Label Detected", data.safety_advisory || "The camera could not find a recognized pesticide container or label in this image.");
+      showErrorScreen("No Pesticide Packaging Detected", data.safety_advisory || "The optical sensor could not locate a recognized pesticide container or statutory label in this image.");
       return;
     }
 
@@ -261,19 +324,19 @@ function animateProcessingSteps() {
   setTimeout(() => {
     if (step2) step2.className = "step-item done";
     if (step3) step3.className = "step-item active";
-  }, 900);
+  }, 950);
 
   setTimeout(() => {
     if (step3) step3.className = "step-item done";
     if (step4) step4.className = "step-item active";
-  }, 1400);
+  }, 1500);
 }
 
 function renderResults(data) {
   // Provenance Banner
   const provEl = document.getElementById("res-provenance");
   if (provEl) {
-    provEl.textContent = data.inference_metadata?.source || "AI Inference";
+    provEl.textContent = data.inference_metadata?.source || "Gemma 4 Multimodal";
   }
 
   // Toxicity Card
@@ -286,7 +349,7 @@ function renderResults(data) {
   const colorClass = `category-${tox.color.toLowerCase()}`;
 
   if (toxCard) {
-    toxCard.className = `toxicity-hazard-card ${colorClass}`;
+    toxCard.className = `toxicity-hazard-plate ${colorClass}`;
   }
   if (toxSignal) {
     toxSignal.innerHTML = `${tox.symbol || "⚠️"} ${tox.signalWord} (${tox.color} Triangle)`;
@@ -318,14 +381,14 @@ function renderResults(data) {
         warningsContainer.appendChild(li);
       });
     } else {
-      warningsContainer.innerHTML = "<span class='null-value'>No specific warnings legible</span>";
+      warningsContainer.innerHTML = "<span class='spec-value null-value'>No specific warnings legible on packaging</span>";
     }
   }
 
   // Safety Advisory Disclaimer
   const advEl = document.getElementById("res-safety-advisory");
   if (advEl) {
-    advEl.textContent = data.safety_advisory || "Follow statutory precautions.";
+    advEl.textContent = data.safety_advisory || "Follow statutory precautions under Insecticides Rules 1971.";
   }
 
   // Uncertainty Box
@@ -333,8 +396,8 @@ function renderResults(data) {
   const uncertNotes = document.getElementById("res-uncertainty-notes");
   if (uncertBox && uncertNotes) {
     if (data.unreadable_fields && data.unreadable_fields.length > 0) {
-      uncertBox.style.display = "block";
-      uncertNotes.textContent = `Unreadable/Missing fields: ${data.unreadable_fields.join(", ")}. Notes: ${data.confidence_or_uncertainty?.notes || ""}`;
+      uncertBox.style.display = "flex";
+      uncertNotes.textContent = `Unreadable or missing packaging fields: ${data.unreadable_fields.join(", ")}. Notes: ${data.confidence_or_uncertainty?.notes || ""}`;
     } else {
       uncertBox.style.display = "none";
     }
@@ -349,10 +412,10 @@ function setFieldValue(elementId, value, isHighlight = false) {
 
   if (value && String(value).trim().length > 0) {
     el.textContent = value;
-    el.className = isHighlight ? "field-value highlight" : "field-value";
+    el.className = isHighlight ? "spec-value product-highlight" : "spec-value";
   } else {
     el.textContent = "Not legible or unprinted on packaging";
-    el.className = "field-value null-value";
+    el.className = "spec-value null-value";
   }
 }
 
@@ -362,7 +425,7 @@ function renderLanguageContent() {
 
   const summaryEl = document.getElementById("res-farmer-summary");
   if (summaryEl && expl) {
-    summaryEl.innerHTML = `<strong>${expl.signal}:</strong> ${expl.summary} <br><span style="color: #10b981;">${expl.waitingPeriod}</span>`;
+    summaryEl.innerHTML = `<strong>${expl.signal}:</strong> ${expl.summary} <br><span style="color: #173F32; font-weight: 700; margin-top: 4px; display: inline-block;">${expl.waitingPeriod}</span>`;
   }
 
   // Update PPE Chips
@@ -378,11 +441,39 @@ function renderLanguageContent() {
   }
 }
 
+function updateSpeechButtonState(isSpeaking) {
+  const btn = document.getElementById("btn-speak-safety");
+  if (!btn) return;
+
+  const icon = btn.querySelector(".speaker-state-icon");
+  const text = btn.querySelector(".speaker-btn-text");
+
+  if (isSpeaking) {
+    if (icon) icon.textContent = "◼";
+    if (text) text.textContent = "Stop Voice";
+    btn.style.borderColor = "#E4A13B";
+  } else {
+    if (icon) icon.textContent = "▶";
+    if (text) text.textContent = "Read Aloud";
+    btn.style.borderColor = "";
+  }
+}
+
 function triggerSpeechReadout() {
   if (!currentResultData) return;
+
+  if (speech.isSpeaking) {
+    speech.stop();
+    updateSpeechButtonState(false);
+    return;
+  }
+
   const expl = currentResultData.explanations?.[selectedLanguage] || currentResultData.explanations?.en;
   const textToRead = `${expl?.title || ""}. ${expl?.summary || ""}. ${expl?.waitingPeriod || ""}. ${currentResultData.first_aid_text ? "First aid: " + currentResultData.first_aid_text : ""}`;
-  speech.speak(textToRead, selectedLanguage);
+
+  speech.speak(textToRead, selectedLanguage, (isSpeaking) => {
+    updateSpeechButtonState(isSpeaking);
+  });
 }
 
 function showErrorScreen(title, message) {
@@ -407,17 +498,30 @@ async function loadBenchmarkPresets() {
     cases.forEach((tc) => {
       const card = document.createElement("div");
       card.className = "preset-card";
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-label", `Load specimen: ${tc.category}`);
       card.innerHTML = `
         <img class="preset-img" src="${tc.imageUrl}" alt="${tc.id}" loading="lazy" />
         <div class="preset-name">${tc.category.replace(/_/g, " ")}</div>
         <div class="preset-meta">${tc.id.substring(0, 18)}...</div>
       `;
-      card.addEventListener("click", () => {
-        // Load preset into preview directly
+
+      const selectPreset = () => {
         currentCapturedImage = tc.imageUrl;
         previewImg.src = tc.imageUrl;
         showScreen("preview");
+        showToast(`Loaded Specimen: ${tc.category.replace(/_/g, " ")}`);
+      };
+
+      card.addEventListener("click", selectPreset);
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          selectPreset();
+        }
       });
+
       container.appendChild(card);
     });
   } catch (err) {
@@ -434,13 +538,14 @@ async function checkHealth() {
 
     if (pill && text) {
       if (data.environment?.has_hf_token) {
-        text.textContent = "Gemma 4 Ready";
+        text.textContent = "Gemma 4 Online";
       } else {
-        text.textContent = "Local OCR Mode";
+        text.textContent = "Local CIB&RC Mode";
       }
     }
   } catch {
-    // offline
+    const text = document.getElementById("header-status-text");
+    if (text) text.textContent = "Offline Mode";
   }
 }
 
