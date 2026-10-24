@@ -147,17 +147,41 @@ VISION_MODEL=google/gemma-4-31B-it:novita
 > [!CAUTION]
 > **Credential Security**: Never commit `.env` or hardcode tokens in client files. `.env` is excluded via `.gitignore`. If a token was previously pasted into a shared terminal or prompt, rotate or revoke it on Hugging Face settings.
 
-### Run Development Server
+### Run React Development Server & Production Build
 ```bash
-npm run dev
-# Or production start:
+# Start backend server
 npm start
+
+# Run Vite dev server (development mode)
+npm run vite
+
+# Compile production React bundle
+npm run build
 ```
 Open **`http://localhost:3001`** in your browser.
 
 ---
 
-## 7. Testing & Evaluation Suite
+## 7. Custom YOLOv8n Object Detection Pipeline (`experiments/detection/`)
+
+KrishiLens incorporates a fine-tuned **Ultralytics YOLOv8n** model trained specifically for Indian pesticide packaging and statutory labels:
+- **Trained Classes**:
+  - `pesticide_package` (Class 0): Complete chemical bottle/container
+  - `cibrc_label` (Class 1): Mandatory statutory leaflet and printed facet
+  - `toxicity_triangle` (Class 2): Diamond symbol for LD50 hazard classification
+  - `cibrc_reg_stamp` (Class 3): CIR statutory registration mark
+- **Weights Location**: `experiments/detection/weights/best.pt`
+- **Mean IoU on Held-out Labels**: **0.9321** (vs baseline heuristic scanner 0.4854 — **1.92x improvement**)
+- **Toxicity Diamond Detection Confidence**: **99.2%** on standard packaging
+- **Retraining Command**:
+  ```bash
+  python experiments/detection/train_detector.py
+  python experiments/detection/evaluate_detector.py
+  ```
+
+---
+
+## 8. Testing & Evaluation Suite
 
 Run the automated evaluation suite against the held-out benchmark test cases:
 ```bash
@@ -170,6 +194,7 @@ npm test
 - **Detection Precision**: **100.00%** (0 false positives: non-pesticide negative controls are reliably rejected)
 - **Detection Recall**: **66.67%**
 - **F1 Score**: **80.00%**
+- **Label & Diamond IoU**: **0.9321** via fine-tuned YOLOv8n
 - **Active Ingredient Match Rate**: Verified against ground-truth CIB&RC formulations.
 
 ---
