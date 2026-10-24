@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
 import scanRouter from "./src/routes/scan.js";
+import yoloRouter from "./src/routes/yolo.js";
 import { fileURLToPath } from "url";
 
 dotenv.config();
@@ -19,28 +20,29 @@ app.use(cors());
 app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 
-// Static frontend: serve Vite build (dist) if present, otherwise fallback to public
-const distPath = path.join(__dirname, "dist");
-if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
-}
+// Static frontend
 app.use(express.static(path.join(__dirname, "public")));
 // Serve test benchmark images
 app.use("/test-images", express.static(path.join(__dirname, "data", "test_images")));
 
 // API Routes
 app.use("/api", scanRouter);
+app.use("/api/yolo", yoloRouter);
 
 // Health check
-app.get("/api/health", (req, res) => {
+app.get("/api/health", async (req, res) => {
+  const { yoloService } = await import("./src/services/yoloService.js");
+  const yoloAvailable = await yoloService.checkHealth();
   const hasHfToken = Boolean(process.env.HF_TOKEN && process.env.HF_TOKEN.length > 5);
   res.json({
     status: "healthy",
     service: "KrishiLens API",
-    version: "1.0.0",
+    version: "2.0.0",
     environment: {
       has_hf_token: hasHfToken,
       vision_model: process.env.VISION_MODEL || "google/gemma-4-31B-it:novita",
+      yolo_server: yoloAvailable ? "online" : "offline",
+      yolo_url: process.env.YOLO_SERVER_URL || "http://localhost:5001",
       port: PORT
     },
     timestamp: new Date().toISOString()
@@ -63,15 +65,12 @@ app.get("/api/test-samples", (req, res) => {
 
 // SPA fallback
 app.use((req, res) => {
-  const distIndex = path.join(__dirname, "dist", "index.html");
-  const pubIndex = path.join(__dirname, "public", "index.html");
-  if (fs.existsSync(distIndex)) {
-    return res.sendFile(distIndex);
+  const indexPath = path.join(__dirname, "public", "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.send("KrishiLens Backend Running. Build public/index.html to view UI.");
   }
-  if (fs.existsSync(pubIndex)) {
-    return res.sendFile(pubIndex);
-  }
-  res.send("KrishiLens Backend Running. Build frontend to view UI.");
 });
 
 app.listen(PORT, () => {

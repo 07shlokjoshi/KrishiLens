@@ -1,0 +1,327 @@
+# KrishiLens Dataset Workflow — Visual Diagram
+
+```
+═══════════════════════════════════════════════════════════════════════════════
+                    KRISHILENS DATASET PREPARATION WORKFLOW
+═══════════════════════════════════════════════════════════════════════════════
+
+
+PHASE 1: COLLECTION (1-3 days)
+───────────────────────────────────────────────────────────────────────────────
+
+  Pesticide Images              Negative Controls          Track Metadata
+       (50-100)                      (3-5)               (Source, License)
+          │                             │                      │
+          ├─────────────────────────────┴──────────────────────┤
+          │                                                     │
+          ▼                                                     ▼
+    ┌───────────┐                                         ┌──────────┐
+    │ incoming/ │  Legal Sources:                         │SOURCE.txt│
+    │           │  • CIB&RC database                      │• License │
+    │batch_001/ │  • Manufacturer websites                │• Type    │
+    │           │  • Local markets                        │• Contact │
+    │*.jpg      │  • Research institutions                └──────────┘
+    └───────────┘
+          │
+          └─────────────────────┬─────────────────────┘
+                                │
+                                ▼
+              ✅ Check image quality & diversity
+                 (640×480 min, clear, multiple types)
+
+
+PHASE 2: ANNOTATION (2-3 hours)
+───────────────────────────────────────────────────────────────────────────────
+
+  ┌────────────────────────────────────────────────────────────┐
+  │                      LabelImg                              │
+  │                                                            │
+  │  For Each Image:                                           │
+  │    1. Draw box around pesticide_package (class 0)         │
+  │    2. Draw box around cibrc_label (class 1)               │
+  │    3. Draw box around toxicity_triangle (class 2)         │
+  │    4. Draw box around cibrc_reg_stamp (class 3)           │
+  │    5. Save (Ctrl+S) → Creates .txt with YOLO format      │
+  │    6. Next (Ctrl+Shift+N)                                 │
+  │                                                            │
+  │  For Negative Controls:                                    │
+  │    → Don't draw any boxes, save empty label file          │
+  └────────────────────────────────────────────────────────────┘
+          │
+          ▼
+    ┌───────────────┐
+    │ incoming/     │  YOLO Format:
+    │ batch_001/    │  0 0.4987 0.4847 0.9529 0.8964
+    │               │  1 0.4987 0.4847 0.9529 0.8964
+    │ image1.jpg    │  2 0.5044 0.3472 0.1418 0.2141
+    │ image1.txt    │  3 0.3472 0.8550 0.3157 0.0781
+    │               │
+    │ image2.jpg    │  (class_id cx cy w h)
+    │ image2.txt    │  - All coordinates normalized [0,1]
+    │               │  - One line per bounding box
+    └───────────────┘
+          │
+          └────────────────────┬────────────────────┘
+                               │
+                               ▼
+                     ✅ VALIDATE STEP 1
+                   scripts/validate_dataset.py
+                   /data/incoming/batch_001
+
+                   Expected: ✅ VALIDATION PASSED
+
+
+PHASE 3: PREPARATION (30 minutes)
+───────────────────────────────────────────────────────────────────────────────
+
+  Move to Reviewed Folder:
+  ┌──────────────────────────────────────────────────────┐
+  │ mv data/incoming/batch_001/* data/reviewed/          │
+  └──────────────────────────────────────────────────────┘
+          │
+          ▼
+    ┌───────────────┐
+    │ reviewed/     │  ✅ VALIDATE STEP 2
+    │               │  scripts/validate_dataset.py
+    │ image1.jpg    │  /data/reviewed
+    │ image1.txt    │
+    │               │  Expected: ✅ VALIDATION PASSED
+    │ image2.jpg    │
+    │ image2.txt    │
+    └───────────────┘
+          │
+          └─────────────────────┬──────────────────────┘
+                                │
+                                ▼
+                      MERGE DATASETS STEP
+                   ┌──────────────────────────┐
+                   │ scripts/merge_datasets.py │
+                   │                          │
+                   │ Existing Dataset (33)    │
+                   │ +                        │
+                   │ New Dataset (~50-100)    │
+                   │ =                        │
+                   │ Merged Dataset (83-133)  │
+                   └──────────────────────────┘
+                          │
+                          ▼
+                   ┌──────────────────────────┐
+                   │ pesticide_merged/        │
+                   │                          │
+                   │ images/                  │
+                   │ ├── train/  (70%)        │
+                   │ ├── val/    (15%)        │
+                   │ └── test/   (15%)        │
+                   │                          │
+                   │ labels/                  │
+                   │ ├── train/               │
+                   │ ├── val/                 │
+                   │ └── test/                │
+                   │                          │
+                   │ data.yaml ← READY!       │
+                   │ MERGE_MANIFEST.json      │
+                   └──────────────────────────┘
+                          │
+                          └────────────┬────────────┘
+                                       │
+                                       ▼
+                          ✅ VALIDATE STEP 3
+                       scripts/validate_dataset.py
+                       /data/pesticide_merged
+
+                       Expected: ✅ VALIDATION PASSED
+
+
+PHASE 4: TRAINING (3-4 hours on Apple Silicon)
+───────────────────────────────────────────────────────────────────────────────
+
+  ┌────────────────────────────────────────────────────┐
+  │ experiments/yolo_train_improved.py                 │
+  │                                                    │
+  │ Epoch 1/60:  loss=... | val_loss=...              │
+  │ Epoch 10/60: loss=... | val_loss=...              │
+  │ Epoch 30/60: loss=... | val_loss=... (best)       │
+  │ Epoch 60/60: loss=... | val_loss=...              │
+  │                                                    │
+  │ ✅ Training complete                              │
+  │ ✅ Best model saved: best.pt                      │
+  └────────────────────────────────────────────────────┘
+          │
+          ▼
+   ┌──────────────────────────┐
+   │ experiments/detection/    │
+   │ improved_v1_baseline/     │
+   │ weights/best.pt           │
+   └──────────────────────────┘
+          │
+          └────────────────┬────────────┘
+                           │
+                           ▼
+                  EVALUATE MODEL STEP
+              ┌─────────────────────────┐
+              │ experiments/yolo_evaluate.py  │
+              │                         │
+              │ Baseline:              │
+              │ mAP@50-95: 59.7%      │
+              │ Ratio: 1.67×          │
+              │                         │
+              │ New Model:             │
+              │ mAP@50-95: ???        │
+              │ Ratio: ???            │
+              └─────────────────────────┘
+                          │
+                    ┌─────┴─────┐
+                    │           │
+              Better ✅     Same/Worse ❌
+                    │           │
+                    ▼           ▼
+              DEPLOY!     Try Again
+              (Step 8)    (Collect more
+                          images)
+
+
+PHASE 5: DEPLOYMENT (15 minutes, if metrics improved)
+───────────────────────────────────────────────────────────────────────────────
+
+  Backup Current:
+  ┌──────────────────────────────────────────┐
+  │ cp best.pt → best.pt.backup_2026-10-25   │
+  └──────────────────────────────────────────┘
+          │
+          ▼
+  Deploy New Model:
+  ┌──────────────────────────────────────────┐
+  │ cp improved_v1_baseline/best.pt → best.pt│
+  └──────────────────────────────────────────┘
+          │
+          ▼
+  Restart Server:
+  ┌──────────────────────────────────────────┐
+  │ pkill -f yoloServer.py                   │
+  │ .venv/bin/python src/services/yoloServer.py &│
+  └──────────────────────────────────────────┘
+          │
+          ▼
+  Test Inference:
+  ┌──────────────────────────────────────────┐
+  │ .venv/bin/python test_e2e_yolo.py        │
+  │                                          │
+  │ ✅ Model loads                           │
+  │ ✅ Inference runs                        │
+  │ ✅ All tests PASS                        │
+  └──────────────────────────────────────────┘
+          │
+          ▼
+      ✅ PRODUCTION READY!
+      (New model deployed)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                              SUCCESS METRICS
+═══════════════════════════════════════════════════════════════════════════════
+
+Current Baseline:
+  mAP@50: 99.50%        (misleading due to overfitting)
+  mAP@50-95: 59.70%     ← PRIMARY metric to improve
+  Overfitting: 1.67×    ← Secondary metric to improve
+  False pos: ~18%       ← Tertiary metric to improve
+
+After Adding 200-500 Images:
+  mAP@50-95: >65%       ✅ (improvement from 59.7%)
+  Overfitting: <1.3×    ✅ (improvement from 1.67×)
+  False pos: <5%        ✅ (improvement from 18%)
+  Tested on: Diverse    ✅ (multiple pesticides, containers, angles)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                           FOLDER STRUCTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+data/
+├── pesticide_pilot_dataset/        ← Current: 33 images ✅ VALIDATED
+│   ├── images/
+│   │   ├── train/     (29)
+│   │   ├── val/       (2)
+│   │   └── test/      (2)
+│   └── labels/
+│       ├── train/
+│       ├── val/
+│       └── test/
+│
+├── incoming/                       ← INPUT: New raw images
+│   └── batch_001_2026-10-25/
+│       ├── image1.jpg
+│       ├── image2.jpg
+│       └── SOURCE.txt
+│
+├── reviewed/                       ← INTERMEDIATE: Annotated images
+│   ├── image1.jpg
+│   ├── image1.txt      (YOLO format)
+│   ├── image2.jpg
+│   └── image2.txt
+│
+├── external_datasets/              ← REFERENCE: Track external sources
+│   └── SOURCES.md      (document all sources & licenses)
+│
+└── pesticide_merged/              ← OUTPUT: Merged & ready for training
+    ├── images/
+    │   ├── train/     (70% of total)
+    │   ├── val/       (15% of total)
+    │   └── test/      (15% of total)
+    ├── labels/
+    │   ├── train/
+    │   ├── val/
+    │   └── test/
+    ├── data.yaml
+    └── MERGE_MANIFEST.json         (tracks sources & licenses)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                             QUICK COMMANDS
+═══════════════════════════════════════════════════════════════════════════════
+
+Validate:      .venv/bin/python scripts/validate_dataset.py <path>
+Merge:         .venv/bin/python scripts/merge_datasets.py --existing ... --new ...
+Train:         .venv/bin/python experiments/yolo_train_improved.py --data ...
+Evaluate:      .venv/bin/python experiments/yolo_evaluate.py --split test
+Annotate:      labelImg data/incoming data/classes.txt
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                         ESTIMATED TIMELINE
+═══════════════════════════════════════════════════════════════════════════════
+
+Collection:    1-3 days    (find & download images)
+Annotation:    2-3 hours   (label with LabelImg)
+Validation:    30 min      (run validation scripts)
+Training:      3-4 hours   (YOLOv8n on Apple Silicon)
+Evaluation:    30 min      (check metrics)
+Deployment:    15 min      (if metrics improve)
+─────────────────────────────────────────────
+TOTAL:         2-3 weeks   (to production-ready model)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+```
+
+---
+
+## Key Points
+
+1. **Validation is mandatory** before every training
+2. **Source tracking** via MERGE_MANIFEST.json
+3. **Duplicate detection** prevents data leakage
+4. **Negative controls** included in all splits
+5. **YOLO format** used throughout
+6. **No automatic deployment** - always compare metrics first
+7. **Frontend unchanged** - web app continues to work
+
+---
+
+## Navigation
+
+📖 For detailed instructions: See [DATASET_WORKFLOW.md](DATASET_WORKFLOW.md)
+📝 For annotation guide: See [ANNOTATION_GUIDE.md](ANNOTATION_GUIDE.md)
+⚡ For quick reference: See [DATASET_PREPARATION_QUICK_REFERENCE.md](DATASET_PREPARATION_QUICK_REFERENCE.md)
+🔧 For exact commands: See [EXACT_COMMANDS.md](EXACT_COMMANDS.md)
+

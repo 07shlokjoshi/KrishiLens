@@ -1878,3 +1878,239 @@ body {
     flex-direction: row;
   }
 }
+
+/* ==========================================================================
+   YOLO DETECTION PANEL COMPONENTS
+   Real bounding-box detection results, model metrics, and detection lists
+   ========================================================================== */
+
+/* ── Run YOLO Detection Button ── */
+.btn-yolo-detect {
+  background: linear-gradient(135deg, #1a3a2a 0%, #0f2218 100%);
+  color: #10b981;
+  border: 1.5px solid #10b981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(16, 185, 129, 0.15);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.btn-yolo-detect:hover {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(16, 185, 129, 0.25);
+  background: linear-gradient(135deg, #1f4535 0%, #132a1e 100%);
+}
+.btn-yolo-detect:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ── YOLO Badge ── */
+.yolo-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  white-space: nowrap;
+}
+.yolo-badge-ok {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+.yolo-badge-warn {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.yolo-badge-error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ── Preview YOLO Detection Panel ── */
+.yolo-detection-panel {
+  background: linear-gradient(160deg, #0f1f18 0%, #0a1610 100%);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin: 12px 0;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.yolo-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.yolo-panel-icon {
+  font-size: 16px;
+}
+.yolo-panel-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-dark-primary);
+  flex: 1;
+}
+
+/* ── Detection Rows ── */
+.yolo-detections-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+.yolo-det-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-xs);
+  border-left-width: 3px;
+  border-left-style: solid;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.yolo-det-class {
+  font-weight: 700;
+  min-width: 130px;
+  font-size: 12px;
+}
+.yolo-det-conf {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 11px;
+  color: #e2e8f0;
+  min-width: 38px;
+  text-align: center;
+}
+.yolo-det-coords,
+.yolo-det-bbox {
+  color: var(--c-text-dark-secondary);
+  font-size: 10px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── YOLO Offline Notice ── */
+.yolo-offline-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: #fca5a5;
+  margin-top: 8px;
+}
+.yolo-offline-notice code {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #f87171;
+}
+
+/* ── Loading state ── */
+.yolo-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--c-text-dark-secondary);
+}
+.yolo-no-detect {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--c-text-dark-secondary);
+  padding: 8px 0;
+  margin: 0;
+}
+.yolo-error {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #fca5a5;
+  padding: 8px 0;
+  margin: 0;
+}
+
+/* ── YOLO Results Panel (Results Screen) ── */
+.yolo-results-panel {
+  background: linear-gradient(160deg, #0d1d16 0%, #091310 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.yolo-results-header {
+  margin-bottom: 12px;
+}
+.yolo-results-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.yolo-results-icon {
+  font-size: 18px;
+}
+.yolo-results-title {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-text-dark-primary);
+  flex: 1;
+}
+
+/* ── Model metric pills ── */
+.yolo-model-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.yolo-metric-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.1);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  letter-spacing: 0.04em;
+}
+
+/* ── Annotated preview with YOLO boxes ── */
+.yolo-annotated-preview {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin: 12px 0;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: #000;
+}
+.yolo-annotated-preview img {
+  border-radius: var(--radius-sm);
+}
+

@@ -1,0 +1,150 @@
+{
+  "evaluation_timestamp": "2026-10-24T21:08:19.245775Z",
+  "checkpoint": "experiments/detection/weights/best.pt",
+  "split": "test",
+  "device": "mps",
+  "dataset": "data/pesticide_pilot_dataset/data.yaml",
+  "num_images": 2,
+  "metrics": {
+    "precision": 0.725293,
+    "recall": 1.0,
+    "f1_score": 0.840777,
+    "mAP50": 0.995,
+    "mAP50_95": 0.597
+  },
+  "overfitting_analysis": {
+    "ratio_mAP50_to_mAP50-95": 1.67,
+    "indicator": "HIGH \u26a0\ufe0f",
+    "note": "Healthy: 1.0-1.2 | Moderate: 1.2-1.5 | High: >1.5"
+  },
+  "per_class_mAP50": {
+    "pesticide_package": 0.4975,
+    "cibrc_label": 0.2985,
+    "toxicity_triangle": 0.995,
+    "cibrc_reg_stamp": 0.597
+  },
+  "error_analysis": {
+    "TRUE_POSITIVE": 1,
+    "TRUE_NEGATIVE": 0,
+    "FALSE_POSITIVE": 1,
+    "FALSE_NEGATIVE": 0
+  },
+  "per_image_results": [
+    {
+      "image": "label_5_cropped_acetamiprid",
+      "gt_boxes": 3,
+      "pred_boxes": 3,
+      "error_type": "TRUE_POSITIVE",
+      "detections": [
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.8496,
+          "bbox_norm": [
+            0.5076,
+            0.247,
+            0.2384,
+            0.3571
+          ]
+        },
+        {
+          "class_id": 0,
+          "class_name": "pesticide_package",
+          "confidence": 0.5509,
+          "bbox_norm": [
+            0.4238,
+            0.4664,
+            0.8476,
+            0.9328
+          ]
+        },
+        {
+          "class_id": 1,
+          "class_name": "cibrc_label",
+          "confidence": 0.4706,
+          "bbox_norm": [
+            0.551,
+            0.4731,
+            0.8981,
+            0.9461
+          ]
+        }
+      ]
+    },
+    {
+      "image": "label_7_non_pesticide_control",
+      "gt_boxes": 0,
+      "pred_boxes": 6,
+      "error_type": "FALSE_POSITIVE",
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "pesticide_package",
+          "confidence": 0.5707,
+          "bbox_norm": [
+            0.7419,
+            0.8301,
+            0.5158,
+            0.326
+          ]
+        },
+        {
+          "class_id": 0,
+          "class_name": "pesticide_package",
+          "confidence": 0.5503,
+          "bbox_norm": [
+            0.276,
+            0.8339,
+            0.5519,
+            0.3322
+          ]
+        },
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.4134,
+          "bbox_norm": [
+            0.0654,
+            0.2224,
+            0.1277,
+            0.1613
+          ]
+        },
+        {
+          "class_id": 1,
+          "class_name": "cibrc_label",
+          "confidence": 0.4061,
+          "bbox_norm": [
+            0.3113,
+            0.3973,
+            0.6226,
+            0.7946
+          ]
+        },
+        {
+          "class_id": 0,
+          "class_name": "pesticide_package",
+          "confidence": 0.3761,
+          "bbox_norm": [
+            0.6305,
+            0.2741,
+            0.739,
+            0.5472
+          ]
+        },
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.3248,
+          "bbox_norm": [
+            0.9369,
+            0.2184,
+            0.1262,
+            0.131
+          ]
+        }
+      ]
+    }
+  ],
+  "evaluation_time_sec": 3.64
+}

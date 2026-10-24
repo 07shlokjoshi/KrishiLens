@@ -330,8 +330,10 @@
         </div>
 
         <div class="preview-frame-casing">
-          <div class="preview-container">
-            <img id="preview-img" alt="Captured Pesticide Packaging Label" />
+          <div class="preview-container" style="position:relative;">
+            <img id="preview-img" alt="Captured Pesticide Packaging Label" style="display:block;width:100%;height:auto;" />
+            <!-- YOLO bbox overlay canvas — positioned absolutely over the image -->
+            <canvas id="yolo-bbox-canvas" style="position:absolute;top:0;left:0;pointer-events:none;" aria-hidden="true"></canvas>
             <div class="preview-meta-stamp">
               <span class="stamp-icon">✓</span>
               <span>CALIBRATED FOR OPTICAL DECONVOLUTION</span>
@@ -339,7 +341,28 @@
           </div>
         </div>
 
+        <!-- YOLO Detection Status Panel (shown after detect runs) -->
+        <div id="yolo-preview-panel" class="yolo-detection-panel" style="display:none;">
+          <div class="yolo-panel-header">
+            <span class="yolo-panel-icon">🎯</span>
+            <span class="yolo-panel-title">YOLO Object Detection</span>
+            <span id="yolo-badge" class="yolo-badge">0 objects</span>
+          </div>
+          <div id="yolo-detections-list" class="yolo-detections-list"></div>
+          <div id="yolo-offline-notice" class="yolo-offline-notice" style="display:none;">
+            <span>⚠️</span>
+            <span>YOLO server offline — start with: <code>.venv/bin/python src/services/yoloServer.py</code></span>
+          </div>
+        </div>
+
         <div class="preview-actions">
+          <button id="btn-run-yolo" class="tactile-btn btn-yolo-detect" aria-label="Run YOLO Detection">
+            <span class="btn-highlight"></span>
+            <span class="btn-icon">🎯</span>
+            <span class="btn-text">Run YOLO Detection</span>
+            <span class="btn-groove"></span>
+          </button>
+
           <button id="btn-analyze-now" class="tactile-btn btn-primary-deck" aria-label="Analyze Label with AI Inference">
             <span class="btn-highlight"></span>
             <span class="btn-icon">⚡</span>
@@ -604,6 +627,28 @@
           <p id="res-safety-advisory" class="disclaimer-body">
             This instrument transcribes physical packaging text verbatim. Always cross-reference with official CIB&RC registers. Do not guess dosage. Consult an authorized agricultural extension officer before application.
           </p>
+        </div>
+
+        <!-- YOLO Computer Vision Detection Panel -->
+        <div id="yolo-results-panel" class="yolo-results-panel" style="display:none;">
+          <div class="yolo-results-header">
+            <div class="yolo-results-title-row">
+              <span class="yolo-results-icon">🎯</span>
+              <span class="yolo-results-title">YOLO Object Detection</span>
+              <span id="yolo-res-badge" class="yolo-badge">–</span>
+            </div>
+            <div id="yolo-model-metrics" class="yolo-model-metrics"></div>
+          </div>
+          <!-- Annotated preview image with bboxes -->
+          <div class="yolo-annotated-preview" style="position:relative;">
+            <img id="yolo-result-img" alt="YOLO annotated image" style="display:block;width:100%;height:auto;border-radius:8px;" />
+            <canvas id="yolo-result-canvas" style="position:absolute;top:0;left:0;pointer-events:none;" aria-hidden="true"></canvas>
+          </div>
+          <div id="yolo-res-detections" class="yolo-detections-list"></div>
+          <div id="yolo-res-offline" class="yolo-offline-notice" style="display:none;">
+            <span>⚠️ YOLO server offline —</span>
+            <code>(.venv/bin/python src/services/yoloServer.py)</code>
+          </div>
         </div>
 
         <!-- Return & Navigation Actions -->

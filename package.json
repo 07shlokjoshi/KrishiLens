@@ -7,9 +7,12 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "build": "vite build",
-    "vite": "vite",
-    "test": "node test/evaluate.js"
+    "test": "node test/evaluate.js",
+    "yolo-server": ".venv/bin/python src/services/yoloServer.py",
+    "yolo-train": ".venv/bin/python experiments/yolo_train.py",
+    "yolo-eval": ".venv/bin/python experiments/yolo_evaluate.py",
+    "yolo-eval-all": ".venv/bin/python experiments/yolo_evaluate.py --all",
+    "yolo-eval-val": ".venv/bin/python experiments/yolo_evaluate.py --split val"
   },
   "keywords": [],
   "author": "",

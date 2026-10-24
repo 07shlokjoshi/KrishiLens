@@ -1,0 +1,46 @@
+{
+  "experiment_id": "exp1_yolov8n_augmented",
+  "timestamp": "2026-10-24T20:29:39.969607Z",
+  "config": {
+    "model_weights": "yolov8n.pt",
+    "model_size": "yolov8n",
+    "epochs": 100,
+    "imgsz": 640,
+    "batch": 8,
+    "lr0": 0.001,
+    "device": "mps",
+    "augment_args": {
+      "hsv_h": 0.02,
+      "hsv_s": 0.7,
+      "hsv_v": 0.4,
+      "degrees": 15.0,
+      "translate": 0.15,
+      "scale": 0.5,
+      "shear": 5.0,
+      "flipud": 0.3,
+      "fliplr": 0.5,
+      "mosaic": 1.0,
+      "mixup": 0.0,
+      "copy_paste": 0.1,
+      "dropout": 0.1,
+      "weight_decay": 0.0005,
+      "warmup_epochs": 5,
+      "cos_lr": true
+    }
+  },
+  "training_time_sec": 304.5,
+  "best_checkpoint": "experiments/detection/weights/exp1_yolov8n_augmented_best.pt",
+  "best_epoch_from_csv": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "mAP50": 0.0,
+    "mAP50_95": 0.0,
+    "epoch": 0
+  },
+  "val_metrics": {},
+  "test_metrics": {},
+  "per_class_val_mAP50": {},
+  "f1_summary": {
+    "val": 0.0
+  }
+}

@@ -30,7 +30,3 @@ build/
 temp_uploads/
 *.traineddata
 test_acetamiprid.png
-*.cache
-yolov8n.pt
-runs/
-

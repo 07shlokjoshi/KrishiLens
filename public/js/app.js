@@ -1,6 +1,7 @@
 import { CameraController } from "./camera.js";
 import { LabelDetector } from "./detector.js";
 import { SpeechReader } from "./speech.js";
+import { YoloBBoxRenderer, runYoloDetect, checkYoloHealth } from "./yoloBBox.js";
 
 // DOM Elements
 const videoEl = document.getElementById("camera-video");
@@ -32,10 +33,16 @@ let selectedLanguage = "en";
 let currentCropRect = null;
 let toastTimeout = null;
 
+// YOLO State
+let yoloPreviewRenderer = null;
+let yoloResultRenderer = null;
+let lastYoloResult = null;
+
 // Initialize
 async function init() {
   setupNavigation();
   setupCamera();
+  setupYolo();
   setupClickToCopy();
   loadBenchmarkPresets();
   checkHealth();
@@ -115,7 +122,7 @@ function setupNavigation() {
 
   // Preview buttons
   document.getElementById("btn-retake")?.addEventListener("click", () => {
-    startCameraWorkflow();
+    showScreen("home");
   });
 
   document.getElementById("btn-analyze-now")?.addEventListener("click", () => {
@@ -181,6 +188,186 @@ function setupClickToCopy() {
       }
     });
   });
+}
+
+function setupYolo() {
+  // Preview YOLO button
+  document.getElementById("btn-run-yolo")?.addEventListener("click", () => {
+    if (currentCapturedImage) {
+      runYoloOnPreview(currentCapturedImage);
+    } else {
+      showToast("No image loaded — capture or upload first.");
+    }
+  });
+
+  // Initialize preview renderer
+  const previewImg = document.getElementById("preview-img");
+  const previewCanvas = document.getElementById("yolo-bbox-canvas");
+  if (previewImg && previewCanvas) {
+    yoloPreviewRenderer = new YoloBBoxRenderer(previewImg, previewCanvas);
+  }
+
+  // Initialize results renderer
+  const resultImg = document.getElementById("yolo-result-img");
+  const resultCanvas = document.getElementById("yolo-result-canvas");
+  if (resultImg && resultCanvas) {
+    yoloResultRenderer = new YoloBBoxRenderer(resultImg, resultCanvas);
+  }
+}
+
+async function runYoloOnPreview(imageDataUri) {
+  const yoloBtn = document.getElementById("btn-run-yolo");
+  const panel = document.getElementById("yolo-preview-panel");
+  const badge = document.getElementById("yolo-badge");
+  const list = document.getElementById("yolo-detections-list");
+  const offlineNotice = document.getElementById("yolo-offline-notice");
+
+  if (yoloBtn) {
+    yoloBtn.disabled = true;
+    yoloBtn.querySelector(".btn-text").textContent = "Detecting...";
+  }
+
+  if (panel) panel.style.display = "block";
+  if (offlineNotice) offlineNotice.style.display = "none";
+  if (list) list.innerHTML = `<div class="yolo-loading"><span class="preset-spinner"></span> Running YOLO inference...</div>`;
+
+  try {
+    const result = await runYoloDetect(imageDataUri);
+    lastYoloResult = result;
+
+    if (!result.available || result.error === "YOLO_SERVER_OFFLINE") {
+      if (offlineNotice) offlineNotice.style.display = "flex";
+      if (list) list.innerHTML = "";
+      if (badge) badge.textContent = "Server offline";
+      badge.className = "yolo-badge yolo-badge-error";
+      showToast("⚠️ YOLO server offline — run the Python sidecar");
+      return;
+    }
+
+    if (result.error) {
+      if (list) list.innerHTML = `<p class="yolo-error">${result.message}</p>`;
+      if (badge) { badge.textContent = "Error"; badge.className = "yolo-badge yolo-badge-error"; }
+      return;
+    }
+
+    // Render bounding boxes on preview
+    if (yoloPreviewRenderer) {
+      // Wait for image to be fully loaded before rendering
+      const img = document.getElementById("preview-img");
+      if (img.complete) {
+        yoloPreviewRenderer.render(result);
+      } else {
+        img.onload = () => yoloPreviewRenderer.render(result);
+      }
+    }
+
+    // Update badge
+    const n = result.num_detections || 0;
+    if (badge) {
+      badge.textContent = `${n} object${n !== 1 ? "s" : ""} detected`;
+      badge.className = n > 0 ? "yolo-badge yolo-badge-ok" : "yolo-badge yolo-badge-warn";
+    }
+
+    // Render detection list
+    if (list) {
+      if (n === 0) {
+        list.innerHTML = `<p class="yolo-no-detect">No objects detected above threshold. Try lowering confidence or improving image quality.</p>`;
+      } else {
+        list.innerHTML = result.detections.map(d => `
+          <div class="yolo-det-row" style="border-left:3px solid ${d.color};">
+            <span class="yolo-det-class" style="color:${d.color};">${formatClassName(d.class_name)}</span>
+            <span class="yolo-det-conf">${Math.round(d.confidence * 100)}%</span>
+            <span class="yolo-det-coords">cx=${d.bbox_norm[0].toFixed(3)} cy=${d.bbox_norm[1].toFixed(3)} w=${d.bbox_norm[2].toFixed(3)} h=${d.bbox_norm[3].toFixed(3)}</span>
+          </div>
+        `).join("");
+      }
+    }
+
+    showToast(`YOLO: ${n} object${n !== 1 ? "s" : ""} detected (${result.latency_ms}ms)`);
+  } catch (err) {
+    if (list) list.innerHTML = `<p class="yolo-error">Error: ${err.message}</p>`;
+    if (badge) { badge.textContent = "Failed"; badge.className = "yolo-badge yolo-badge-error"; }
+    console.error("YOLO detect error:", err);
+  } finally {
+    if (yoloBtn) {
+      yoloBtn.disabled = false;
+      yoloBtn.querySelector(".btn-text").textContent = "Run YOLO Detection";
+    }
+  }
+}
+
+function formatClassName(name) {
+  const map = {
+    pesticide_package: "Pesticide Package",
+    cibrc_label: "CIB&RC Label",
+    toxicity_triangle: "Toxicity Triangle",
+    cibrc_reg_stamp: "Registration Stamp",
+  };
+  return map[name] || name;
+}
+
+function renderYoloResults(imageDataUri, yoloData) {
+  const panel = document.getElementById("yolo-results-panel");
+  const offlineEl = document.getElementById("yolo-res-offline");
+  const badge = document.getElementById("yolo-res-badge");
+  const metricEl = document.getElementById("yolo-model-metrics");
+  const list = document.getElementById("yolo-res-detections");
+  const resultImg = document.getElementById("yolo-result-img");
+
+  if (!panel) return;
+  panel.style.display = "block";
+
+  if (!yoloData || !yoloData.available || yoloData.error === "YOLO_SERVER_OFFLINE") {
+    if (offlineEl) offlineEl.style.display = "flex";
+    if (badge) { badge.textContent = "Server offline"; badge.className = "yolo-badge yolo-badge-error"; }
+    return;
+  }
+
+  if (offlineEl) offlineEl.style.display = "none";
+
+  // Show annotated image
+  if (resultImg) {
+    resultImg.src = imageDataUri;
+    resultImg.onload = () => {
+      if (yoloResultRenderer && yoloData.num_detections > 0) {
+        yoloResultRenderer.render(yoloData);
+      }
+    };
+  }
+
+  // Badge
+  const n = yoloData.num_detections || 0;
+  if (badge) {
+    badge.textContent = `${n} object${n !== 1 ? "s" : ""} (${yoloData.latency_ms}ms)`;
+    badge.className = n > 0 ? "yolo-badge yolo-badge-ok" : "yolo-badge yolo-badge-warn";
+  }
+
+  // Model metrics
+  if (metricEl) {
+    const m = yoloData.model_metrics || {};
+    const items = [];
+    if (m.val_mAP50 != null) items.push(`mAP@50: ${(m.val_mAP50 * 100).toFixed(1)}%`);
+    if (m.val_mAP50_95 != null) items.push(`mAP@50-95: ${(m.val_mAP50_95 * 100).toFixed(1)}%`);
+    if (m.val_precision != null) items.push(`P: ${(m.val_precision * 100).toFixed(1)}%`);
+    if (m.val_recall != null) items.push(`R: ${(m.val_recall * 100).toFixed(1)}%`);
+    if (m.winning_experiment) items.push(`Model: ${m.winning_experiment}`);
+    metricEl.innerHTML = items.map(i => `<span class="yolo-metric-pill">${i}</span>`).join("");
+  }
+
+  // Detections list
+  if (list) {
+    if (n === 0) {
+      list.innerHTML = `<p class="yolo-no-detect">No objects detected above threshold (conf≥0.25).</p>`;
+    } else {
+      list.innerHTML = yoloData.detections.map(d => `
+        <div class="yolo-det-row" style="border-left:3px solid ${d.color};">
+          <span class="yolo-det-class" style="color:${d.color};">${formatClassName(d.class_name)}</span>
+          <span class="yolo-det-conf">${Math.round(d.confidence * 100)}%</span>
+          <span class="yolo-det-bbox">x1=${d.bbox_pixels.x1.toFixed(0)} y1=${d.bbox_pixels.y1.toFixed(0)} ${d.bbox_pixels.width.toFixed(0)}×${d.bbox_pixels.height.toFixed(0)}px</span>
+        </div>
+      `).join("");
+    }
+  }
 }
 
 function setupCamera() {
@@ -300,7 +487,19 @@ async function processImageAnalysis(imageDataUri) {
   } catch (err) {
     console.error("Analysis failed:", err);
     showErrorScreen("Network or Analysis Error", "Failed to analyze image: " + err.message);
+    return;
   }
+
+  // Run YOLO detection in parallel (non-blocking, never fails the main flow)
+  runYoloDetect(currentCapturedImage || imageDataUri)
+    .then(yoloResult => {
+      lastYoloResult = yoloResult;
+      renderYoloResults(currentCapturedImage || imageDataUri, yoloResult);
+    })
+    .catch(err => {
+      console.warn("YOLO detection failed silently:", err);
+      renderYoloResults(currentCapturedImage || imageDataUri, { available: false, error: "YOLO_SERVER_OFFLINE" });
+    });
 }
 
 function animateProcessingSteps() {
@@ -537,8 +736,14 @@ async function checkHealth() {
     const text = document.getElementById("header-status-text");
 
     if (pill && text) {
-      if (data.environment?.has_hf_token) {
+      const yoloOnline = data.environment?.yolo_server === "online";
+      const hasHf = data.environment?.has_hf_token;
+      if (hasHf && yoloOnline) {
+        text.textContent = "Gemma 4 + YOLO Online";
+      } else if (hasHf) {
         text.textContent = "Gemma 4 Online";
+      } else if (yoloOnline) {
+        text.textContent = "YOLO Online (Local)";
       } else {
         text.textContent = "Local CIB&RC Mode";
       }

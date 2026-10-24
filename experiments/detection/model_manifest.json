@@ -1,0 +1,61 @@
+{
+  "promoted_at": "2026-10-25T20:44:00Z",
+  "winning_experiment": "exp3_yolov8n_hires",
+  "source_checkpoint": "runs/detect/experiments/detection/exp3_yolov8n_hires/weights/best.pt",
+  "model_config": {
+    "model_weights": "yolov8n.pt",
+    "model_size": "yolov8n",
+    "epochs": 80,
+    "imgsz": 1024,
+    "batch": 4,
+    "lr0": 0.001,
+    "device": "mps",
+    "augmentation": "hsv+rotation+scale+mosaic+cosine_lr"
+  },
+  "val_metrics": {
+    "val_precision": 0.9375,
+    "val_recall": 0.75,
+    "val_mAP50": 0.995,
+    "val_mAP50_95": 0.43,
+    "val_map_per_class": [
+      0.995,
+      0.995,
+      0.995,
+      0.995
+    ]
+  },
+  "per_class_val_mAP50": {
+    "pesticide_package": 0.995,
+    "cibrc_label": 0.995,
+    "toxicity_triangle": 0.995,
+    "cibrc_reg_stamp": 0.995
+  },
+  "f1_val": 0.8333,
+  "production_checkpoint": "experiments/detection/weights/best.pt",
+  "class_names": [
+    "pesticide_package",
+    "cibrc_label",
+    "toxicity_triangle",
+    "cibrc_reg_stamp"
+  ],
+  "experiment_comparison": {
+    "exp1_yolov8n_augmented": {
+      "epochs": 100,
+      "imgsz": 640,
+      "val_mAP50": 0.7872,
+      "val_mAP50_95": 0.372
+    },
+    "exp2_yolov8s_augmented": {
+      "epochs": 80,
+      "imgsz": 640,
+      "val_mAP50": 0.7671,
+      "val_mAP50_95": 0.407
+    },
+    "exp3_yolov8n_hires": {
+      "epochs": 80,
+      "imgsz": 1024,
+      "val_mAP50": 0.995,
+      "val_mAP50_95": 0.43
+    }
+  }
+}
