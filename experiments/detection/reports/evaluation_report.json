@@ -1,0 +1,177 @@
+{
+  "model": "YOLOv8n Pesticide Label Detector",
+  "weights_path": "experiments/detection/weights/best.pt",
+  "evaluation_timestamp": "2026-10-25 00:38:45",
+  "metrics": {
+    "test_accuracy_pct": 50.0,
+    "precision_pct": 50.0,
+    "recall_pct": 100.0,
+    "f1_score_pct": 66.67,
+    "mean_iou_on_labels": 0.9321,
+    "mean_latency_ms": 587.16,
+    "fps_throughput": 1.7
+  },
+  "baseline_comparison": {
+    "baseline_heuristic_accuracy_pct": 50.0,
+    "trained_yolo_accuracy_pct": 50.0,
+    "baseline_heuristic_mean_iou": 0.4854,
+    "trained_yolo_mean_iou": 0.9321,
+    "improvement_factor_iou": 1.92
+  },
+  "results": [
+    {
+      "image": "label_5_cropped_acetamiprid.png",
+      "is_pesticide_ground_truth": true,
+      "detector_found_objects": true,
+      "is_decision_correct": true,
+      "detections": [
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.9205,
+          "bbox_normalized": [
+            0.3956,
+            0.0988,
+            0.2081,
+            0.3237
+          ]
+        },
+        {
+          "class_id": 0,
+          "class_name": "pesticide_package",
+          "confidence": 0.8989,
+          "bbox_normalized": [
+            0.0011,
+            0.0,
+            0.9989,
+            0.9331
+          ]
+        },
+        {
+          "class_id": 1,
+          "class_name": "cibrc_label",
+          "confidence": 0.7871,
+          "bbox_normalized": [
+            0.036,
+            0.0,
+            0.964,
+            0.9349
+          ]
+        },
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.3887,
+          "bbox_normalized": [
+            0.4413,
+            0.0677,
+            0.1836,
+            0.3284
+          ]
+        },
+        {
+          "class_id": 0,
+          "class_name": "pesticide_package",
+          "confidence": 0.296,
+          "bbox_normalized": [
+            0.008,
+            0.0131,
+            0.627,
+            0.9231
+          ]
+        },
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.2901,
+          "bbox_normalized": [
+            0.3944,
+            0.0663,
+            0.1439,
+            0.3227
+          ]
+        },
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.2568,
+          "bbox_normalized": [
+            0.3943,
+            0.1532,
+            0.175,
+            0.2678
+          ]
+        }
+      ],
+      "ground_truth_box_count": 3,
+      "max_class_iou": 0.9321,
+      "latency_ms": 1126.37
+    },
+    {
+      "image": "label_7_non_pesticide_control.png",
+      "is_pesticide_ground_truth": false,
+      "detector_found_objects": true,
+      "is_decision_correct": false,
+      "detections": [
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.9294,
+          "bbox_normalized": [
+            0.5007,
+            0.6775,
+            0.1668,
+            0.2529
+          ]
+        },
+        {
+          "class_id": 1,
+          "class_name": "cibrc_label",
+          "confidence": 0.3736,
+          "bbox_normalized": [
+            0.0257,
+            0.4947,
+            0.9377,
+            0.5053
+          ]
+        },
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.3363,
+          "bbox_normalized": [
+            0.3266,
+            0.6765,
+            0.1653,
+            0.2257
+          ]
+        },
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.2938,
+          "bbox_normalized": [
+            0.0,
+            0.6891,
+            0.1898,
+            0.3085
+          ]
+        },
+        {
+          "class_id": 2,
+          "class_name": "toxicity_triangle",
+          "confidence": 0.2721,
+          "bbox_normalized": [
+            0.5035,
+            0.6731,
+            0.2226,
+            0.2496
+          ]
+        }
+      ],
+      "ground_truth_box_count": 0,
+      "max_class_iou": 0.0,
+      "latency_ms": 47.95
+    }
+  ]
+}

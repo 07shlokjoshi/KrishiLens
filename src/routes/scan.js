@@ -3,6 +3,7 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { InferenceEngine } from "../services/inferenceEngine.js";
+import { DetectorService } from "../services/detectorService.js";
 
 const router = express.Router();
 const upload = multer({
@@ -10,6 +11,7 @@ const upload = multer({
 });
 
 const engine = new InferenceEngine();
+const detector = new DetectorService();
 
 /**
  * POST /api/scan
@@ -39,6 +41,12 @@ router.post("/scan", upload.single("image"), async (req, res) => {
       const diskPath = path.resolve("data/test_images", filename);
       if (fs.existsSync(diskPath)) {
         imageInput = fs.readFileSync(diskPath);
+      } else {
+        return res.status(404).json({
+          label_detected: false,
+          status: "FILE_NOT_FOUND",
+          error: `Test sample image '${filename}' not found.`
+        });
       }
     }
 
@@ -56,4 +64,51 @@ router.post("/scan", upload.single("image"), async (req, res) => {
   }
 });
 
+/**
+ * POST /api/detect
+ * Lightweight endpoint to only run YOLOv8 object detection
+ */
+router.post("/detect", upload.single("image"), async (req, res) => {
+  try {
+    let imageInput = null;
+
+    if (req.file) {
+      imageInput = req.file.buffer;
+    } else if (req.body && req.body.image) {
+      imageInput = req.body.image;
+    }
+
+    if (!imageInput) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing image data"
+      });
+    }
+
+    if (typeof imageInput === "string" && imageInput.startsWith("/test-images/")) {
+      const filename = path.basename(imageInput);
+      const diskPath = path.resolve("data/test_images", filename);
+      if (fs.existsSync(diskPath)) {
+        imageInput = fs.readFileSync(diskPath);
+      } else {
+        return res.status(404).json({
+          success: false,
+          error: `Test sample image '${filename}' not found.`
+        });
+      }
+    }
+
+    const confThreshold = req.body.conf ? parseFloat(req.body.conf) : 0.35;
+    const result = await detector.detectObjects(imageInput, confThreshold);
+    return res.json(result);
+  } catch (err) {
+    console.error("Detect error:", err);
+    return res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+});
+
 export default router;
+

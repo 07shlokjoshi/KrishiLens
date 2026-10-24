@@ -1,5 +1,5 @@
 {
-  "evaluated_at": "2026-10-24T13:40:53.541Z",
+  "evaluated_at": "2026-10-24T19:34:29.147Z",
   "total_samples": 7,
   "label_detection_metrics": {
     "true_positives": 4,
@@ -27,7 +27,7 @@
       "concentration": "99% w/w Minimum",
       "toxicity_category": "CATEGORY_III",
       "unreadable_fields_count": 3,
-      "latency_ms": 2875,
+      "latency_ms": 3758,
       "ai_matched": true,
       "conc_matched": true,
       "unreadable_flagged_correctly": false
@@ -40,7 +40,7 @@
       "active_ingredient": null,
       "concentration": null,
       "unreadable_fields_count": 0,
-      "latency_ms": 686,
+      "latency_ms": 2799,
       "ai_matched": false,
       "conc_matched": false,
       "unreadable_flagged_correctly": false
@@ -53,7 +53,7 @@
       "active_ingredient": null,
       "concentration": null,
       "unreadable_fields_count": 0,
-      "latency_ms": 1925,
+      "latency_ms": 2836,
       "ai_matched": null,
       "conc_matched": false,
       "unreadable_flagged_correctly": false
@@ -67,7 +67,7 @@
       "concentration": "99% w/w Minimum",
       "toxicity_category": "CATEGORY_III",
       "unreadable_fields_count": 2,
-      "latency_ms": 2357,
+      "latency_ms": 2595,
       "ai_matched": false,
       "conc_matched": false,
       "unreadable_flagged_correctly": false
@@ -81,7 +81,7 @@
       "concentration": "99.00% w/w minimum",
       "toxicity_category": "CATEGORY_III",
       "unreadable_fields_count": 3,
-      "latency_ms": 1366,
+      "latency_ms": 2843,
       "ai_matched": false,
       "conc_matched": false,
       "unreadable_flagged_correctly": true
@@ -95,7 +95,7 @@
       "concentration": "99% w/w Minimum",
       "toxicity_category": "CATEGORY_III",
       "unreadable_fields_count": 2,
-      "latency_ms": 2332,
+      "latency_ms": 2628,
       "ai_matched": false,
       "conc_matched": false,
       "unreadable_flagged_correctly": false
@@ -108,7 +108,7 @@
       "active_ingredient": null,
       "concentration": null,
       "unreadable_fields_count": 0,
-      "latency_ms": 2076,
+      "latency_ms": 2689,
       "ai_matched": false,
       "conc_matched": false,
       "unreadable_flagged_correctly": false

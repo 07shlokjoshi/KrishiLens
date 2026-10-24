@@ -19,7 +19,11 @@ app.use(cors());
 app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 
-// Static frontend
+// Static frontend: serve Vite build (dist) if present, otherwise fallback to public
+const distPath = path.join(__dirname, "dist");
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
 app.use(express.static(path.join(__dirname, "public")));
 // Serve test benchmark images
 app.use("/test-images", express.static(path.join(__dirname, "data", "test_images")));
@@ -59,12 +63,15 @@ app.get("/api/test-samples", (req, res) => {
 
 // SPA fallback
 app.use((req, res) => {
-  const indexPath = path.join(__dirname, "public", "index.html");
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
-  } else {
-    res.send("KrishiLens Backend Running. Build public/index.html to view UI.");
+  const distIndex = path.join(__dirname, "dist", "index.html");
+  const pubIndex = path.join(__dirname, "public", "index.html");
+  if (fs.existsSync(distIndex)) {
+    return res.sendFile(distIndex);
   }
+  if (fs.existsSync(pubIndex)) {
+    return res.sendFile(pubIndex);
+  }
+  res.send("KrishiLens Backend Running. Build frontend to view UI.");
 });
 
 app.listen(PORT, () => {

@@ -1,7 +1,7 @@
 # KrishiLens Pesticide Package & Label Detection Dataset Specification
-# Formatted for YOLOv8, PyTorch TorchVision Detection, and CVAT/LabelStudio exports
+# Formatted for YOLOv8 and PyTorch TorchVision Detection
 
-path: data/pesticide_pilot_dataset
+path: /Users/shlokjoshi/Desktop/KrishiLens/data/pesticide_pilot_dataset
 train: images/train
 val: images/val
 test: images/test
