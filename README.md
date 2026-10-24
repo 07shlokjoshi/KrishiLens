@@ -182,3 +182,4 @@ npm test
 
 
 PPT LINk :- https://drive.google.com/file/d/1NbDiUD1suPymOZYWymeUsevTG9ldqimf/view?usp=sharing
+DEPLOY LINK :- https://krishilens-yxzp.onrender.com/
