@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  krishilens:
+    build: .
+    container_name: krishilens-app
+    ports:
+      - "3001:3001"
+      - "5001:5001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - YOLO_PORT=5001
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
