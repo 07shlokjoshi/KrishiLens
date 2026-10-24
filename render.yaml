@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: krishilens-app
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+
+    # Environment variables
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: YOLO_SERVER_URL
+        value: http://localhost:5001
+
+    # Health check
+    healthCheckPath: /
+
+    # Auto-deploy on git push
+    autoDeploy: true
+
+    # Build configuration
+    staticPublicPath: public
+
+    # Disk size
+    disk:
+      name: data-volume
+      mountPath: /app/data
+      sizeGB: 1
+
+  # Optional: Separate Python service for YOLO
+  # Uncomment if you want dedicated Python service
+  # - type: web
+  #   name: krishilens-yolo
+  #   env: python
+  #   plan: free
+  #   pythonVersion: 3.11
+  #   startCommand: python src/services/yoloServer.py
+  #   envVars:
+  #     - key: PORT
+  #       value: 5001
+  #   healthCheckPath: /health
+  #   autoDeploy: true
