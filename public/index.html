@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>KrishiLens — Real-Time Pesticide Label Detection</title>
+  <meta name="description" content="Instant camera-based pesticide label detection and multimodal interpretation for Indian farmers using Gemma 4." />
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Persistent Header -->
+    <header class="app-header">
+      <div class="brand-wrapper">
+        <span class="brand-logo">🌾</span>
+        <div>
+          <span class="brand-title">KrishiLens</span>
+          <span class="badge-tag">Gemma 4</span>
+        </div>
+      </div>
+      <div id="header-status-pill" class="api-status-pill">
+        <span class="status-dot"></span>
+        <span id="header-status-text">Connecting...</span>
+      </div>
+    </header>
+
+    <!-- Hidden File Input for Image Upload Fallback -->
+    <input type="file" id="file-input" accept="image/*" class="hidden" />
+
+    <!-- ======================================================================
+         SCREEN 1: HOME SCREEN
+         ====================================================================== -->
+    <main id="screen-home" class="screen active">
+      <div class="hero-card">
+        <div class="hero-icon">🔎🌾</div>
+        <h1 class="hero-title">Scan Pesticide Label</h1>
+        <p class="hero-subtitle">
+          Point camera at any pesticide bottle, box, or packet. KrishiLens detects the label, reads active ingredients, verifies toxicity, and explains safety rules in simple language.
+        </p>
+        
+        <button id="btn-start-scan" class="btn-primary" aria-label="Open Camera to Scan Label">
+          <span>📷</span> Open Camera Scanner
+        </button>
+        
+        <button id="btn-upload-file" class="btn-secondary" aria-label="Upload Photo or Leaflet">
+          <span>📁</span> Upload Photo or Leaflet
+        </button>
+      </div>
+
+      <!-- Core Features Grid -->
+      <div class="feature-list">
+        <div class="feature-box">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">Real-Time Detection</div>
+          <div class="feature-desc">Automatic packaging boundary tracking at 15 FPS without network delay.</div>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">🛡️</div>
+          <div class="feature-title">CIB&RC Standards</div>
+          <div class="feature-desc">Statutory Red/Yellow/Blue/Green toxicity triangle verification.</div>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-title">Gemma 4 Multimodal</div>
+          <div class="feature-desc">Deep image understanding with verbatim safety instruction extraction.</div>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">🔊</div>
+          <div class="feature-title">Voice Guidance</div>
+          <div class="feature-desc">Audio readout in Hindi & Marathi for farmers with limited literacy.</div>
+        </div>
+      </div>
+
+      <!-- Test Benchmark Presets -->
+      <div class="presets-section">
+        <div class="section-label">Official Benchmark Test Samples</div>
+        <div id="presets-container" class="preset-scroll">
+          <div class="preset-meta" style="padding: 10px;">Loading verified test cases...</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ======================================================================
+         SCREEN 2: LIVE CAMERA SCREEN
+         ====================================================================== -->
+    <section id="screen-camera" class="screen camera-screen">
+      <div class="camera-viewport">
+        <video id="camera-video" playsinline autoplay muted></video>
+        <canvas id="detector-canvas"></canvas>
+
+        <div class="camera-overlay">
+          <!-- Top Bar -->
+          <div class="camera-top-bar">
+            <button id="btn-cam-back" class="cam-btn-icon" aria-label="Back to Home">✕</button>
+            <button id="btn-toggle-torch" class="cam-btn-icon" aria-label="Toggle Flashlight" style="display: none;">🔦</button>
+            <button id="btn-flip-cam" class="cam-btn-icon" aria-label="Flip Camera">🔄</button>
+          </div>
+
+          <!-- Center Detection Reticle -->
+          <div class="detection-reticle-container">
+            <div id="detection-box" class="detection-box">
+              <div class="scan-laser-line"></div>
+            </div>
+            <div id="detection-pill" class="detection-status-pill">
+              🔍 Align Pesticide Label in Frame
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Controls Bar -->
+      <div class="camera-bottom-bar">
+        <button id="btn-shutter" class="shutter-btn" aria-label="Capture Label Frame">
+          <div class="shutter-btn-inner"></div>
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCREEN 3: PREVIEW & CONFIRM SCREEN
+         ====================================================================== -->
+    <section id="screen-preview" class="screen">
+      <h2 style="font-size: 18px; margin-bottom: 12px; font-family: var(--font-heading);">
+        Verify Captured Image
+      </h2>
+      <div class="preview-container">
+        <img id="preview-img" alt="Captured Pesticide Label" />
+        <span class="crop-badge">✓ Captured at High Resolution</span>
+      </div>
+
+      <div class="preview-actions">
+        <button id="btn-analyze-now" class="btn-primary">
+          <span>⚡</span> Analyze Label with Gemma 4
+        </button>
+        <button id="btn-retake" class="btn-secondary">
+          <span>🔄</span> Retake Photo
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCREEN 4: PROCESSING STATE
+         ====================================================================== -->
+    <section id="screen-processing" class="screen">
+      <div class="processing-container">
+        <div class="spinner-orbit"></div>
+        <h2 class="processing-title">Reading Pesticide Label...</h2>
+        <p class="processing-subtitle">Analyzing regulatory chemical text and safety markings</p>
+
+        <div class="pipeline-steps">
+          <div id="proc-step-1" class="step-item active">
+            <span class="step-icon">📐</span> Preprocessing & edge normalization
+          </div>
+          <div id="proc-step-2" class="step-item">
+            <span class="step-icon">🤖</span> Gemma 4 Multimodal inference
+          </div>
+          <div id="proc-step-3" class="step-item">
+            <span class="step-icon">🔍</span> Extracting active ingredients & dose
+          </div>
+          <div id="proc-step-4" class="step-item">
+            <span class="step-icon">🛡️</span> Verifying CIB&RC statutory safety rules
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SCREEN 5: STRUCTURED RESULTS SCREEN
+         ====================================================================== -->
+    <section id="screen-results" class="screen results-screen">
+      
+      <!-- Provenance Badge -->
+      <div class="provenance-banner">
+        <span>Engine:</span>
+        <span id="res-provenance" class="provenance-pill">Gemma 4</span>
+      </div>
+
+      <!-- Toxicity Hazard Banner -->
+      <div id="res-tox-card" class="toxicity-hazard-card category-blue">
+        <div class="tox-header">
+          <div id="res-tox-signal" class="tox-signal-word">⚠️ DANGER (Blue Triangle)</div>
+          <div id="res-tox-badge" class="tox-badge">MODERATELY TOXIC</div>
+        </div>
+        <div id="res-tox-desc" class="tox-risk-desc">Harmful if swallowed or inhaled.</div>
+      </div>
+
+      <!-- Audio TTS Voice Reader -->
+      <div class="audio-tts-bar">
+        <div class="audio-label">
+          <span>🔊</span> Listen to Safety Guidance
+        </div>
+        <button id="btn-speak-safety" class="btn-tts">
+          <span>▶</span> Read Aloud
+        </button>
+      </div>
+
+      <!-- Language Selector Tabs -->
+      <div class="lang-selector-tabs">
+        <button class="lang-tab active" data-lang="en">English</button>
+        <button class="lang-tab" data-lang="hi">हिंदी (Hindi)</button>
+        <button class="lang-tab" data-lang="mr">मराठी (Marathi)</button>
+      </div>
+
+      <!-- Farmer Summary Card -->
+      <div class="field-card" style="margin-bottom: 16px; border-color: rgba(16, 185, 129, 0.4);">
+        <div class="field-label">Farmer Advisory Summary</div>
+        <div id="res-farmer-summary" class="field-value" style="font-size: 14px;">
+          Follow prescribed spray schedule.
+        </div>
+        <div class="field-label mt-12">Mandatory Protective Gear (PPE)</div>
+        <div id="res-ppe-chips" class="ppe-chips-container">
+          <!-- Filled dynamically -->
+        </div>
+      </div>
+
+      <!-- Structured Fields Group -->
+      <div class="result-field-group">
+        
+        <div class="field-card">
+          <div class="field-label">Product / Brand Name</div>
+          <div id="res-product-name" class="field-value highlight">Loading...</div>
+        </div>
+
+        <div class="field-card">
+          <div class="field-label">Active Ingredient</div>
+          <div id="res-active-ingredient" class="field-value">Loading...</div>
+        </div>
+
+        <div class="field-card">
+          <div class="field-label">Concentration & Formulation</div>
+          <div id="res-concentration" class="field-value">Loading...</div>
+        </div>
+
+        <div class="field-card">
+          <div class="field-label">CIB&RC Registration Number</div>
+          <div id="res-reg-no" class="field-value">Loading...</div>
+        </div>
+
+        <div class="field-card">
+          <div class="field-label">Directions for Use</div>
+          <div id="res-directions" class="field-value">Loading...</div>
+        </div>
+
+        <div class="field-card">
+          <div class="field-label">First Aid & Antidote Protocol</div>
+          <div id="res-first-aid" class="field-value" style="color: #fca5a5;">Loading...</div>
+        </div>
+
+        <div class="field-card">
+          <div class="field-label">Safety Warnings Read from Label</div>
+          <ul id="res-warnings-list" style="padding-left: 20px; font-size: 13px; color: #f9fafb; margin-top: 6px;">
+          </ul>
+        </div>
+
+        <div class="field-card">
+          <div class="field-label">Storage Instructions</div>
+          <div id="res-storage" class="field-value">Loading...</div>
+        </div>
+
+      </div>
+
+      <!-- Uncertainty Box (Displayed if any fields were unclear) -->
+      <div id="res-uncertainty-box" class="safety-disclaimer-box" style="display: none; background: rgba(245, 158, 11, 0.12); border-left-color: #f59e0b; color: #fde68a;">
+        <strong>⚠️ Clarity Notice:</strong>
+        <p id="res-uncertainty-notes" style="margin-top: 4px;"></p>
+      </div>
+
+      <!-- Statutory Safety Disclaimer -->
+      <div class="safety-disclaimer-box">
+        <strong>⚠️ Statutory Disclaimer:</strong>
+        <p id="res-safety-advisory" style="margin-top: 4px;">
+          This application reads printed packaging text. It does not replace advice from certified agricultural extension officers. Never guess dosage.
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <button id="btn-scan-another" class="btn-primary" style="margin-bottom: 12px;">
+        <span>📷</span> Scan Another Label
+      </button>
+      <button id="btn-home-from-result" class="btn-secondary">
+        <span>🏠</span> Return to Home
+      </button>
+
+    </section>
+
+    <!-- ======================================================================
+         SCREEN 6: ERROR & UNREADABLE SCREEN
+         ====================================================================== -->
+    <section id="screen-error" class="screen">
+      <div class="error-card">
+        <div class="error-icon">⚠️</div>
+        <h2 id="error-title" class="error-title">Unreadable Label</h2>
+        <p id="error-message" class="error-message">
+          The camera could not find legible text on this pesticide packaging.
+        </p>
+
+        <button id="btn-error-retry" class="btn-primary" style="margin-bottom: 12px;">
+          <span>🔄</span> Try Scanning Again
+        </button>
+        <button id="btn-error-home" class="btn-secondary">
+          <span>🏠</span> Back to Home
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+{
+  "evaluated_at": "2026-10-24T13:40:53.541Z",
+  "total_samples": 7,
+  "label_detection_metrics": {
+    "true_positives": 4,
+    "false_positives": 0,
+    "true_negatives": 1,
+    "false_negatives": 2,
+    "precision": 100,
+    "recall": 66.67,
+    "accuracy": 71.43,
+    "f1_score": 80
+  },
+  "field_level_accuracy": {
+    "active_ingredient_extraction": "1 / 6",
+    "concentration_extraction": "1 / 6",
+    "toxicity_classification": "4 / 6",
+    "unreadable_uncertainty_handling": "1 / 2"
+  },
+  "test_case_results": [
+    {
+      "id": "label_1_clear_acetamiprid",
+      "category": "clear_front_facing",
+      "label_detected": true,
+      "status": "PARTIAL_EXTRACTION_UNCERTAIN",
+      "active_ingredient": "Acetamiprid",
+      "concentration": "99% w/w Minimum",
+      "toxicity_category": "CATEGORY_III",
+      "unreadable_fields_count": 3,
+      "latency_ms": 2875,
+      "ai_matched": true,
+      "conc_matched": true,
+      "unreadable_flagged_correctly": false
+    },
+    {
+      "id": "label_2_blurry_acetamiprid",
+      "category": "blurry_unreadable",
+      "label_detected": false,
+      "status": "NO_LABEL_DETECTED",
+      "active_ingredient": null,
+      "concentration": null,
+      "unreadable_fields_count": 0,
+      "latency_ms": 686,
+      "ai_matched": false,
+      "conc_matched": false,
+      "unreadable_flagged_correctly": false
+    },
+    {
+      "id": "label_3_rotated_acetamiprid",
+      "category": "rotated_90deg",
+      "label_detected": false,
+      "status": "NO_LABEL_DETECTED",
+      "active_ingredient": null,
+      "concentration": null,
+      "unreadable_fields_count": 0,
+      "latency_ms": 1925,
+      "ai_matched": null,
+      "conc_matched": false,
+      "unreadable_flagged_correctly": false
+    },
+    {
+      "id": "label_4_low_light_acetamiprid",
+      "category": "low_light_underexposed",
+      "label_detected": true,
+      "status": "PARTIAL_EXTRACTION_UNCERTAIN",
+      "active_ingredient": "Acetamiprid",
+      "concentration": "99% w/w Minimum",
+      "toxicity_category": "CATEGORY_III",
+      "unreadable_fields_count": 2,
+      "latency_ms": 2357,
+      "ai_matched": false,
+      "conc_matched": false,
+      "unreadable_flagged_correctly": false
+    },
+    {
+      "id": "label_5_cropped_acetamiprid",
+      "category": "cropped_partial",
+      "label_detected": true,
+      "status": "PARTIAL_EXTRACTION_UNCERTAIN",
+      "active_ingredient": "Acetamiprid",
+      "concentration": "99.00% w/w minimum",
+      "toxicity_category": "CATEGORY_III",
+      "unreadable_fields_count": 3,
+      "latency_ms": 1366,
+      "ai_matched": false,
+      "conc_matched": false,
+      "unreadable_flagged_correctly": true
+    },
+    {
+      "id": "label_6_glare_acetamiprid",
+      "category": "glare_overexposed",
+      "label_detected": true,
+      "status": "PARTIAL_EXTRACTION_UNCERTAIN",
+      "active_ingredient": "Acetamiprid",
+      "concentration": "99% w/w Minimum",
+      "toxicity_category": "CATEGORY_III",
+      "unreadable_fields_count": 2,
+      "latency_ms": 2332,
+      "ai_matched": false,
+      "conc_matched": false,
+      "unreadable_flagged_correctly": false
+    },
+    {
+      "id": "label_7_non_pesticide_control",
+      "category": "non_pesticide_negative_control",
+      "label_detected": false,
+      "status": "NO_LABEL_DETECTED",
+      "active_ingredient": null,
+      "concentration": null,
+      "unreadable_fields_count": 0,
+      "latency_ms": 2076,
+      "ai_matched": false,
+      "conc_matched": false,
+      "unreadable_flagged_correctly": false
+    }
+  ]
+}

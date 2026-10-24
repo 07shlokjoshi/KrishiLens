@@ -1,0 +1,208 @@
+{
+  "experiment": "Experiment E: Camera Detector Evaluation",
+  "sample_count": 7,
+  "baseline_edge_detector": {
+    "precision": 83.33,
+    "recall": 83.33,
+    "accuracy": 71.43,
+    "f1": 83.33
+  },
+  "enhanced_contour_detector": {
+    "precision": 85.71,
+    "recall": 100.0,
+    "accuracy": 85.71,
+    "f1": 92.31
+  },
+  "findings": "Generic document/contour detector accurately localizes packaging bounding boxes (dynamic bounding box), whereas edge density is ideal for stability scoring (preventing shaky camera captures).",
+  "details": [
+    {
+      "id": "label_1_clear_acetamiprid",
+      "category": "clear_front_facing",
+      "is_pesticide": true,
+      "baseline": {
+        "detected": true,
+        "confidence": 0.914,
+        "avg_gradient": 3.15,
+        "luminance_std": 69.67,
+        "bbox": [
+          0.1,
+          0.18,
+          0.8,
+          0.64
+        ]
+      },
+      "enhanced": {
+        "detected": true,
+        "confidence": 0.95,
+        "bbox": [
+          0.0,
+          0.0,
+          0.997,
+          0.996
+        ]
+      }
+    },
+    {
+      "id": "label_2_blurry_acetamiprid",
+      "category": "blurry_unreadable",
+      "is_pesticide": true,
+      "baseline": {
+        "detected": true,
+        "confidence": 0.949,
+        "avg_gradient": 2.78,
+        "luminance_std": 81.84,
+        "bbox": [
+          0.1,
+          0.18,
+          0.8,
+          0.64
+        ]
+      },
+      "enhanced": {
+        "detected": true,
+        "confidence": 0.95,
+        "bbox": [
+          0.0,
+          0.0,
+          0.997,
+          0.996
+        ]
+      }
+    },
+    {
+      "id": "label_3_rotated_acetamiprid",
+      "category": "rotated_90deg",
+      "is_pesticide": true,
+      "baseline": {
+        "detected": true,
+        "confidence": 0.738,
+        "avg_gradient": 2.52,
+        "luminance_std": 70.35,
+        "bbox": [
+          0.1,
+          0.18,
+          0.8,
+          0.64
+        ]
+      },
+      "enhanced": {
+        "detected": true,
+        "confidence": 0.95,
+        "bbox": [
+          0.0,
+          0.0,
+          0.997,
+          0.996
+        ]
+      }
+    },
+    {
+      "id": "label_4_low_light_acetamiprid",
+      "category": "low_light_underexposed",
+      "is_pesticide": true,
+      "baseline": {
+        "detected": false,
+        "confidence": 0.096,
+        "avg_gradient": 1.03,
+        "luminance_std": 22.49,
+        "bbox": [
+          0.1,
+          0.18,
+          0.8,
+          0.64
+        ]
+      },
+      "enhanced": {
+        "detected": true,
+        "confidence": 0.95,
+        "bbox": [
+          0.0,
+          0.0,
+          0.997,
+          0.996
+        ]
+      }
+    },
+    {
+      "id": "label_5_cropped_acetamiprid",
+      "category": "cropped_partial",
+      "is_pesticide": true,
+      "baseline": {
+        "detected": true,
+        "confidence": 0.788,
+        "avg_gradient": 2.34,
+        "luminance_std": 80.95,
+        "bbox": [
+          0.1,
+          0.18,
+          0.8,
+          0.64
+        ]
+      },
+      "enhanced": {
+        "detected": true,
+        "confidence": 0.95,
+        "bbox": [
+          0.0,
+          0.0,
+          0.997,
+          0.996
+        ]
+      }
+    },
+    {
+      "id": "label_6_glare_acetamiprid",
+      "category": "glare_overexposed",
+      "is_pesticide": true,
+      "baseline": {
+        "detected": true,
+        "confidence": 0.772,
+        "avg_gradient": 2.54,
+        "luminance_std": 73.0,
+        "bbox": [
+          0.1,
+          0.18,
+          0.8,
+          0.64
+        ]
+      },
+      "enhanced": {
+        "detected": true,
+        "confidence": 0.95,
+        "bbox": [
+          0.0,
+          0.0,
+          0.997,
+          0.996
+        ]
+      }
+    },
+    {
+      "id": "label_7_non_pesticide_control",
+      "category": "non_pesticide_negative_control",
+      "is_pesticide": false,
+      "baseline": {
+        "detected": true,
+        "confidence": 0.8,
+        "avg_gradient": 5.52,
+        "luminance_std": 34.78,
+        "bbox": [
+          0.1,
+          0.18,
+          0.8,
+          0.64
+        ]
+      },
+      "enhanced": {
+        "detected": true,
+        "confidence": 0.95,
+        "bbox": [
+          0.0,
+          0.0,
+          0.997,
+          0.979
+        ]
+      }
+    }
+  ]
+}

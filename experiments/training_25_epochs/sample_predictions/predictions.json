@@ -1,0 +1,58 @@
+[
+  {
+    "image_path": "Arabic-OCR/Dataset/char_sample/ف/2114.png",
+    "true_character": "ف",
+    "predicted_character": "ف",
+    "confidence": 0.9998,
+    "is_correct": true
+  },
+  {
+    "image_path": "Arabic-OCR/Dataset/char_sample/ع/3816.png",
+    "true_character": "ع",
+    "predicted_character": "ع",
+    "confidence": 0.9946,
+    "is_correct": true
+  },
+  {
+    "image_path": "Arabic-OCR/Dataset/char_sample/ه/4410.png",
+    "true_character": "ه",
+    "predicted_character": "ه",
+    "confidence": 1.0,
+    "is_correct": true
+  },
+  {
+    "image_path": "Arabic-OCR/Dataset/char_sample/س/1623.png",
+    "true_character": "س",
+    "predicted_character": "س",
+    "confidence": 1.0,
+    "is_correct": true
+  },
+  {
+    "image_path": "Arabic-OCR/Dataset/char_sample/ش/773.png",
+    "true_character": "ش",
+    "predicted_character": "ش",
+    "confidence": 0.9998,
+    "is_correct": true
+  },
+  {
+    "image_path": "Arabic-OCR/Dataset/char_sample/ذ/77.png",
+    "true_character": "ذ",
+    "predicted_character": "ذ",
+    "confidence": 1.0,
+    "is_correct": true
+  },
+  {
+    "image_path": "Arabic-OCR/Dataset/char_sample/ل/2471.png",
+    "true_character": "ل",
+    "predicted_character": "ل",
+    "confidence": 1.0,
+    "is_correct": true
+  },
+  {
+    "image_path": "Arabic-OCR/Dataset/char_sample/ق/2049.png",
+    "true_character": "ق",
+    "predicted_character": "ق",
+    "confidence": 0.9999,
+    "is_correct": true
+  }
+]

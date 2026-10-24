@@ -1,0 +1,90 @@
+{
+  "manifest_version": "1.0.0",
+  "project": "KrishiLens ML Experiments & Model Evaluation",
+  "timestamp": "2026-10-24T20:21:00Z",
+  "system_hardware": {
+    "cpu": "Apple M4",
+    "total_cores": 10,
+    "memory": "16 GB Unified Memory",
+    "os": "macOS (darwin-arm64)",
+    "python_version": "3.14.3"
+  },
+  "random_seed": 42,
+  "experiments": [
+    {
+      "id": "EXP-A",
+      "name": "Pesticide Chemical Functional Property Classifier",
+      "script": "experiments/train_pesticide_chemical.py",
+      "inference_script": "experiments/predict_pesticide_chemical.py",
+      "dataset_source": "pesticide_data_Pesti-Gen/half_life_pesticide.csv",
+      "license": "Research / Citation (arXiv:2501.14469)",
+      "target_variable": "target class (insecticide, fungicide, herbicide)",
+      "model_type": "RandomForestClassifier",
+      "hyperparameters": {
+        "n_estimators": 100,
+        "max_depth": 20,
+        "ngram_range": [2, 4],
+        "max_features": 1500,
+        "random_state": 42
+      },
+      "splits": {"train": 3005, "val": 644, "test": 644},
+      "checkpoint": "experiments/models/pesticide_chemical_classifier.joblib",
+      "reproduce_command": ".venv/bin/python experiments/train_pesticide_chemical.py"
+    },
+    {
+      "id": "EXP-B",
+      "name": "Arabic Character OCR Classifier",
+      "script": "experiments/train_arabic_ocr.py",
+      "inference_script": "experiments/predict_arabic_ocr.py",
+      "dataset_source": "Arabic-OCR/Dataset/char_sample",
+      "license": "MIT License",
+      "classes_count": 29,
+      "model_type": "MLPClassifier",
+      "hyperparameters": {
+        "hidden_layer_sizes": [100],
+        "max_iter": 200,
+        "alpha": 0.0001,
+        "input_dim": 625,
+        "random_state": 42
+      },
+      "splits": {"train": 8120, "val": 1740, "test": 1740},
+      "checkpoint": "experiments/models/arabic_ocr_classifier.joblib",
+      "reproduce_command": ".venv/bin/python experiments/train_arabic_ocr.py"
+    },
+    {
+      "id": "EXP-C",
+      "name": "Unsupervised Agricultural Terrain Tile Autoencoder",
+      "script": "experiments/train_crop_autoencoder.py",
+      "inference_script": "experiments/predict_crop_autoencoder.py",
+      "dataset_source": "Unsupervised_Crop_Detection/final_algorithm/generated_squares_4",
+      "license": "Unspecified Open Source",
+      "model_type": "MLPRegressor (Autoencoder)",
+      "hyperparameters": {
+        "hidden_layer_sizes": [128, 32, 128],
+        "activation": "relu",
+        "max_iter": 150,
+        "bottleneck_dim": 32,
+        "random_state": 42
+      },
+      "splits": {"train": 1750, "val": 375, "test": 375},
+      "checkpoint": "experiments/models/crop_autoencoder.joblib",
+      "reproduce_command": ".venv/bin/python experiments/train_crop_autoencoder.py"
+    },
+    {
+      "id": "EXP-E",
+      "name": "Camera Detector Evaluation (Baseline Edge vs Enhanced Contour)",
+      "script": "experiments/evaluate_detectors.py",
+      "dataset_source": "data/test_images (7 verified benchmark conditions)",
+      "checkpoint": "None (Heuristic / CV Contours)",
+      "reproduce_command": ".venv/bin/python experiments/evaluate_detectors.py"
+    },
+    {
+      "id": "EXP-F",
+      "name": "OCR vs Gemma 4 Multimodal Ground Truth Evaluation",
+      "script": "experiments/evaluate_ocr_comparison.py",
+      "dataset_source": "data/test_images/label_1_clear_acetamiprid.png & CIB&RC Ground Truth",
+      "checkpoint": "Local Tesseract / HF Router Gemma 4 31B-it",
+      "reproduce_command": ".venv/bin/python experiments/evaluate_ocr_comparison.py"
+    }
+  ]
+}

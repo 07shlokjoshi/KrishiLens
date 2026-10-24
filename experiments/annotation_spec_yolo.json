@@ -1,0 +1,30 @@
+{
+  "specification": "KrishiLens Future Pesticide Packaging Object Detection Dataset",
+  "recommended_architecture": "YOLOv8-Nano / RT-DETR-Tiny (Edge Mobile friendly)",
+  "classes": {
+    "0": "pesticide_container",
+    "1": "label_panel",
+    "2": "toxicity_triangle",
+    "3": "qr_code",
+    "4": "active_ingredient_table"
+  },
+  "minimum_dataset_requirements": {
+    "target_images": 600,
+    "unique_products": 60,
+    "split_policy": "Split strictly by UNIQUE PRODUCT BRAND to prevent visual feature leakage between train and test.",
+    "recommended_splits": {
+      "train": "70% (420 images)",
+      "val": "15% (90 images)",
+      "test": "15% (90 images)"
+    },
+    "environmental_diversity": [
+      "Front-facing flat labels",
+      "Curved bottles (HDPE/PET)",
+      "Folded plastic sachets",
+      "Direct sunlight glare",
+      "Low light indoor / retail counter",
+      "Tilted 15-45 degrees angle"
+    ]
+  },
+  "yolo_txt_format": "<class_id> <x_center_normalized> <y_center_normalized> <width_normalized> <height_normalized>"
+}

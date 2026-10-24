@@ -1,0 +1,101 @@
+{
+  "audit_timestamp": "2026-10-24T19:35:00Z",
+  "repositories": {
+    "pesticide_data_Pesti-Gen": {
+      "path": "/Users/shlokjoshi/Desktop/KrishiLens/pesticide_data_Pesti-Gen",
+      "task_type": "Chemical Molecular Toxicity & Half-life Regression/Classification",
+      "image_count": 0,
+      "has_bounding_boxes": false,
+      "has_pesticide_label_images": false,
+      "files": {
+        "stable_pesticide_data.csv": {
+          "rows": 520,
+          "columns": [
+            "AGCHM_ENG_NM",
+            "LIVESTCK_PISN_RATG_ENG",
+            "ECOLGY_PISN_RATG_ENG",
+            "livestock_level",
+            "ecology_level",
+            "SMILES",
+            "REFINE_WGS84_LAT",
+            "REFINE_WGS84_LOGT",
+            "is_valid",
+            "PURPOS_NM",
+            "DEASEINS_DTLS",
+            "CROPS_DTLS"
+          ]
+        },
+        "half_life_pesticide.csv": {
+          "rows": 4480,
+          "columns": [
+            "substance name",
+            "half life [day]",
+            "target class",
+            "chemical class",
+            "plant class",
+            "SMILES",
+            "is_valid"
+          ]
+        }
+      },
+      "license": "Unspecified / Research (arXiv:2501.14469)"
+    },
+    "Arabic-OCR": {
+      "path": "/Users/shlokjoshi/Desktop/KrishiLens/Arabic-OCR",
+      "task_type": "Arabic Character Glyph Classification (Isolated 29 letters)",
+      "total_glyph_images": 127027,
+      "classes_count": 29,
+      "classes": [
+        "\u0628",
+        "\u062f",
+        "\u0646",
+        "\u0633",
+        "\u0641",
+        "\u0634",
+        "\u0648",
+        "\u063a",
+        "\u0627",
+        "\u062e",
+        "\u0635",
+        "\u0647",
+        "\u0632",
+        "\u0642",
+        "\u0637",
+        "\u0645",
+        "\u0630",
+        "\u0639",
+        "\u062c",
+        "\u062b",
+        "\u064a",
+        "\u0638",
+        "\u0644",
+        "\u0631",
+        "\u0643",
+        "\u0636",
+        "\u062a",
+        "\u062d",
+        "\u0644\u0627"
+      ],
+      "has_bounding_boxes": false,
+      "has_pesticide_label_images": false,
+      "license": "MIT License"
+    },
+    "Unsupervised_Crop_Detection": {
+      "path": "/Users/shlokjoshi/Desktop/KrishiLens/Unsupervised_Crop_Detection",
+      "task_type": "Agricultural Drone Imagery Autoencoder (Field Plants vs Soil Weeds)",
+      "tile_count": 32779,
+      "tile_dimensions": "16x16 pixels",
+      "has_bounding_boxes": false,
+      "has_pesticide_label_images": false,
+      "license": "Unspecified",
+      "file_extension": ".JPG"
+    }
+  },
+  "authentic_pesticide_data": {
+    "source": "Central Insecticides Board & Registration Committee (CIB&RC), Government of India",
+    "pdf_document": "/Users/shlokjoshi/Downloads/acetamiprid_technical_99_label.pdf",
+    "benchmark_variants_count": 7,
+    "variants_path": "/Users/shlokjoshi/Desktop/KrishiLens/data/test_images",
+    "ground_truth_path": "/Users/shlokjoshi/Desktop/KrishiLens/data/ground_truth.json"
+  }
+}

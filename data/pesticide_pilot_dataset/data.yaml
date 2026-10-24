@@ -1,0 +1,17 @@
+# KrishiLens Pesticide Package & Label Detection Dataset Specification
+# Formatted for YOLOv8, PyTorch TorchVision Detection, and CVAT/LabelStudio exports
+
+path: data/pesticide_pilot_dataset
+train: images/train
+val: images/val
+test: images/test
+
+# Number of classes
+nc: 4
+
+# Class names
+names:
+  0: pesticide_package      # Full container body (HDPE bottle, foil pouch, cardboard carton, can)
+  1: cibrc_label            # Primary rectangular text panel containing statutory warnings & ingredients
+  2: toxicity_triangle      # Central statutory CIB&RC toxicity diamond (Red/Yellow/Blue/Green)
+  3: cibrc_reg_stamp        # CIR Registration number and manufacturing license region

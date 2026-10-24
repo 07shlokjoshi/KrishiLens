@@ -1,0 +1,98 @@
+{
+  "scanner_model": "KrishiLens Baseline Edge & Contrast Detector (public/js/detector.js)",
+  "evaluated_at": "2026-10-24 21:31:27",
+  "metrics_overall": {
+    "total_images": 7,
+    "accuracy_pct": 71.43,
+    "precision_pct": 83.33,
+    "recall_pct": 83.33,
+    "f1_score_pct": 83.33,
+    "mean_iou": 0.4854,
+    "mean_latency_ms": 10.59,
+    "fps_throughput": 94.4
+  },
+  "metrics_held_out_test": {
+    "test_images": 2,
+    "accuracy_pct": 50.0,
+    "mean_iou": 0.512
+  },
+  "detailed_results": [
+    {
+      "split": "train",
+      "image": "label_1_clear_acetamiprid.png",
+      "is_pesticide_gt": true,
+      "scanner_detected": true,
+      "is_correct": true,
+      "iou": 0.5994,
+      "avg_gradient": 6.0,
+      "luminance_std": 69.2,
+      "latency_ms": 49.15
+    },
+    {
+      "split": "train",
+      "image": "label_4_low_light_acetamiprid.png",
+      "is_pesticide_gt": true,
+      "scanner_detected": false,
+      "is_correct": false,
+      "iou": 0.0,
+      "avg_gradient": 1.96,
+      "luminance_std": 22.39,
+      "latency_ms": 4.01
+    },
+    {
+      "split": "train",
+      "image": "label_6_glare_acetamiprid.png",
+      "is_pesticide_gt": true,
+      "scanner_detected": true,
+      "is_correct": true,
+      "iou": 0.6004,
+      "avg_gradient": 4.95,
+      "luminance_std": 72.75,
+      "latency_ms": 3.53
+    },
+    {
+      "split": "val",
+      "image": "label_2_blurry_acetamiprid.png",
+      "is_pesticide_gt": true,
+      "scanner_detected": true,
+      "is_correct": true,
+      "iou": 0.6004,
+      "avg_gradient": 5.49,
+      "luminance_std": 83.24,
+      "latency_ms": 4.02
+    },
+    {
+      "split": "val",
+      "image": "label_3_rotated_acetamiprid.png",
+      "is_pesticide_gt": true,
+      "scanner_detected": true,
+      "is_correct": true,
+      "iou": 0.6004,
+      "avg_gradient": 4.82,
+      "luminance_std": 72.56,
+      "latency_ms": 4.09
+    },
+    {
+      "split": "test",
+      "image": "label_5_cropped_acetamiprid.png",
+      "is_pesticide_gt": true,
+      "scanner_detected": true,
+      "is_correct": true,
+      "iou": 0.512,
+      "avg_gradient": 4.45,
+      "luminance_std": 80.92,
+      "latency_ms": 1.7
+    },
+    {
+      "split": "test",
+      "image": "label_7_non_pesticide_control.png",
+      "is_pesticide_gt": false,
+      "scanner_detected": true,
+      "is_correct": false,
+      "iou": 0.0,
+      "avg_gradient": 8.84,
+      "luminance_std": 34.57,
+      "latency_ms": 7.62
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "model_architecture": "ArabicCharCNN (2 Conv Blocks + BatchNorm + Dropout + 2 FC)",
+  "framework": "PyTorch 2.14.1",
+  "device": "mps",
+  "epochs_planned": 30,
+  "batch_size": 64,
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "optimizer": "Adam",
+  "criterion": "CrossEntropyLoss",
+  "random_seed": 42
+}

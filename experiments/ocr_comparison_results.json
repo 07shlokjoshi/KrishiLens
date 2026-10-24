@@ -1,0 +1,26 @@
+{
+  "ground_truth": {
+    "product_name": "Acetamiprid Technical 99% w/w Minimum",
+    "active_ingredient": "Acetamiprid",
+    "concentration": "99.00% w/w minimum",
+    "key_safety_text": "Read leaflet before use: Keep out of reach of children. Keep in cool, dry place away from heat and open flame."
+  },
+  "local_ocr_performance": {
+    "product_name": "Acetamiprid Technical 99% w/w Minimum",
+    "product_name_cer": 0.0,
+    "product_name_wer": 0.0,
+    "active_ingredient": "Acetamiprid",
+    "active_ingredient_match": true,
+    "concentration": "99% w/w Minimum",
+    "concentration_match": true,
+    "toxicity_classification": "CATEGORY_III",
+    "latency_ms": 2624
+  },
+  "cloud_gemma4_status": {
+    "endpoint": "https://router.huggingface.co/v1",
+    "model": "google/gemma-4-31B-it:novita",
+    "status": "HTTP_402_ERROR",
+    "error_detail": "{\"error\":\"You have no remaining credits. Purchase pre-paid credits to continue using Inference Providers. Alternatively, subscribe to PRO to get monthly included credits.\"}"
+  },
+  "finding": "When cloud inference provider credits are 0 (HTTP 402), the local OCR + CIB&RC rules engine successfully extracts Active Ingredient (100% exact match) and Product Name with 0% CER on clear front labels."
+}

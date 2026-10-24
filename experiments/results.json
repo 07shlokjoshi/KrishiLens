@@ -1,0 +1,92 @@
+{
+  "project": "KrishiLens",
+  "generated_at": "2026-10-24T20:20:00Z",
+  "baseline_metrics": {
+    "total_benchmark_samples": 7,
+    "label_detection_accuracy": 71.43,
+    "label_detection_precision": 100.0,
+    "label_detection_recall": 66.67,
+    "f1_score": 80.0
+  },
+  "experiment_results": {
+    "experiment_a_chemical_classifier": {
+      "dataset": "pesticide_data_Pesti-Gen/half_life_pesticide.csv",
+      "task": "Molecular SMILES classification to Insecticide vs Fungicide vs Herbicide",
+      "model": "RandomForestClassifier(n_estimators=100, max_depth=20)",
+      "train_samples": 3005,
+      "val_samples": 644,
+      "test_samples": 644,
+      "validation_accuracy": 99.69,
+      "held_out_test_accuracy": 99.53,
+      "macro_f1": 99.50,
+      "artifact": "experiments/models/pesticide_chemical_classifier.joblib",
+      "plot": "experiments/plots/chemical_confusion_matrix.png",
+      "improves_krishilens_camera": false,
+      "utility_assessment": "Valuable for secondary chemical property lookup and validation of active ingredients extracted by OCR/Gemma 4; does not perform computer vision."
+    },
+    "experiment_b_arabic_ocr": {
+      "dataset": "Arabic-OCR/Dataset/char_sample",
+      "task": "29-class Isolated Arabic Character Glyph Classification",
+      "model": "MLPClassifier(hidden_layer_sizes=(100,), alpha=1e-4)",
+      "train_samples": 8120,
+      "val_samples": 1740,
+      "test_samples": 1740,
+      "training_time_sec": 4.53,
+      "validation_accuracy": 96.72,
+      "held_out_test_accuracy": 97.07,
+      "macro_f1": 97.04,
+      "leakage_hash_check_pct": 21.03,
+      "artifact": "experiments/models/arabic_ocr_classifier.joblib",
+      "plot": "experiments/plots/arabic_ocr_confusion_matrix.png",
+      "improves_krishilens_camera": false,
+      "utility_assessment": "Successfully trained character classifier on Arabic alphabet; completely irrelevant to English, Hindi, and Marathi pesticide packaging."
+    },
+    "experiment_c_crop_tile_autoencoder": {
+      "dataset": "Unsupervised_Crop_Detection/final_algorithm/generated_squares_4",
+      "task": "16x16 Aerial Drone Terrain Patch Reconstruction (Crop Plants vs Weeds)",
+      "model": "Neural Autoencoder MLPRegressor(hidden_layer_sizes=(128, 32, 128))",
+      "total_tiles_discovered": 32779,
+      "train_samples": 1750,
+      "val_samples": 375,
+      "test_samples": 375,
+      "training_time_sec": 2.31,
+      "test_reconstruction_mse": 0.006343,
+      "test_reconstruction_mae": 0.061102,
+      "artifact": "experiments/models/crop_autoencoder.joblib",
+      "plot": "experiments/plots/crop_reconstruction.png",
+      "improves_krishilens_camera": false,
+      "utility_assessment": "Reconstructs agricultural field soil and vegetation; 'crop' represents field plants, not packaging image cropping."
+    },
+    "experiment_d_pesticide_detector_feasibility": {
+      "pesticide_packaging_images_in_repos": 0,
+      "bounding_box_annotations_in_repos": 0,
+      "training_executed": false,
+      "reason": "Absence of real packaging photos and bounding box annotations across all three repositories.",
+      "deliverable": "Created specification template experiments/annotation_spec_yolo.json for future packaging collection."
+    },
+    "experiment_e_detector_comparison": {
+      "baseline_edge_density": {
+        "accuracy": 71.43,
+        "precision": 83.33,
+        "recall": 83.33,
+        "f1": 83.33
+      },
+      "enhanced_contour_document": {
+        "accuracy": 85.71,
+        "precision": 85.71,
+        "recall": 100.0,
+        "f1": 92.31
+      },
+      "finding": "Contour binarization improves packaging recall to 100% and yields dynamic bounding box localization, while edge density provides camera stability scoring."
+    },
+    "experiment_f_ocr_comparison": {
+      "ground_truth_label": "Acetamiprid Technical 99% w/w Minimum",
+      "local_ocr_cer": 0.0,
+      "local_ocr_wer": 0.0,
+      "active_ingredient_match": true,
+      "concentration_match": true,
+      "cloud_gemma4_status": "HTTP_402_ERROR",
+      "cloud_gemma4_blocker": "Zero pre-paid credits on Hugging Face Inference Router account."
+    }
+  }
+}

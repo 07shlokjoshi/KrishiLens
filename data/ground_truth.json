@@ -1,0 +1,69 @@
+{
+  "metadata": {
+    "generated_at": "2026-10-24T12:55:29.052Z",
+    "standards": "CIB&RC (Central Insecticides Board & Registration Committee, India)",
+    "description": "Evaluation benchmark for KrishiLens pesticide label reading and structured extraction"
+  },
+  "test_cases": [
+    {
+      "id": "label_1_clear_acetamiprid",
+      "filename": "label_1_clear_acetamiprid.png",
+      "category": "clear_front_facing",
+      "expected_label_detected": true,
+      "expected_product_name": "Acetamiprid Technical 99% w/w Minimum",
+      "expected_active_ingredient": "Acetamiprid",
+      "expected_concentration": "99.00% w/w minimum",
+      "expected_toxicity_class": "MODERATELY_TOXIC",
+      "expected_toxicity_color": "Blue",
+      "critical_safety_phrases": [
+        "Keep out of reach of children",
+        "Read leaflet before use",
+        "Keep in cool, dry place"
+      ],
+      "should_succeed": true
+    },
+    {
+      "id": "label_2_blurry_acetamiprid",
+      "filename": "label_2_blurry_acetamiprid.png",
+      "category": "blurry_unreadable",
+      "expected_label_detected": true,
+      "should_flag_unreadable": true,
+      "should_succeed": false
+    },
+    {
+      "id": "label_3_rotated_acetamiprid",
+      "filename": "label_3_rotated_acetamiprid.png",
+      "category": "rotated_90deg",
+      "expected_label_detected": true,
+      "expected_active_ingredient": "Acetamiprid",
+      "should_succeed": true
+    },
+    {
+      "id": "label_4_low_light_acetamiprid",
+      "filename": "label_4_low_light_acetamiprid.png",
+      "category": "low_light_underexposed",
+      "expected_label_detected": true,
+      "should_succeed": true
+    },
+    {
+      "id": "label_5_cropped_acetamiprid",
+      "filename": "label_5_cropped_acetamiprid.png",
+      "category": "cropped_partial",
+      "expected_label_detected": true,
+      "should_flag_unreadable": true
+    },
+    {
+      "id": "label_6_glare_acetamiprid",
+      "filename": "label_6_glare_acetamiprid.png",
+      "category": "glare_overexposed",
+      "expected_label_detected": true
+    },
+    {
+      "id": "label_7_non_pesticide_control",
+      "filename": "label_7_non_pesticide_control.png",
+      "category": "non_pesticide_negative_control",
+      "expected_label_detected": false,
+      "should_reject": true
+    }
+  ]
+}
