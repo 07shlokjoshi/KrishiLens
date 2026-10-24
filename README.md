@@ -179,3 +179,6 @@ npm test
 1. **Strictly Reads Printed Labels**: KrishiLens extracts text verbatim from physical packaging. It does **not** hallucinate or invent pesticide application dosages or dilution ratios.
 2. **Uncertainty Flagging**: If any critical text is blurry or cropped, KrishiLens flags the field as `null`, highlights it in amber, and prompts the user: *"Key directions or safety instructions are unclear. Do NOT guess dosage. Consult the printed package leaflet or an authorized agricultural extension officer."*
 3. **No Guarantee of Agricultural Outcomes**: The tool assists in reading and understanding packaging; final responsibility remains with the certified applicator.
+
+
+PPT LINk :- https://drive.google.com/file/d/1NbDiUD1suPymOZYWymeUsevTG9ldqimf/view?usp=sharing
