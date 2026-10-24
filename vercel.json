@@ -1,0 +1,41 @@
+{
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci --omit=optional",
+  "env": {
+    "NODE_ENV": "production",
+    "YOLO_SERVER_URL": ""
+  },
+  "functions": {
+    "api/**": {
+      "runtime": "nodejs20.x",
+      "memory": 3008,
+      "maxDuration": 300
+    }
+  },
+  "headers": [
+    {
+      "source": "/public/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

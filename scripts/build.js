@@ -84,13 +84,17 @@ if (fs.existsSync(validatePath)) {
   warnings.push('Dataset validation script not found');
 }
 
-// Check Python YOLO dependencies (optional)
+// Check Python YOLO dependencies (optional - not needed for Vercel)
 console.log('🐍 Checking Python environment...');
 const venvPath = path.join(PROJECT_ROOT, '.venv');
+const isVercel = process.env.VERCEL === '1';
+
 if (fs.existsSync(venvPath)) {
   console.log('   ✅ Python virtual environment present\n');
-} else {
+} else if (!isVercel) {
   warnings.push('Python virtual environment not found - run: python -m venv .venv');
+} else {
+  console.log('   ℹ️  Skipping (Vercel uses external YOLO service)\n');
 }
 
 // Check Node dependencies
